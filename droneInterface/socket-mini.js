@@ -8,17 +8,24 @@ var fs = require('fs'),
     socket = require("socket.io");
 
 var page = fs.readFileSync(__dirname + uri);
-
+ 
 function handler(request, response)
 {
   response.write(page); 
   response.end(); 
 }
 
-var app = http.createServer(function(r, s){ handler(r,s); });
-app.listen(1657);
+var app = http.createServer(function(r, s){
+	handler(r,s); 
+	
+	
+	});
+app.listen(8080);
+
 
 var listener = socket.listen(app, { log: true });
+
+ 
 
 function decolage()
 {
@@ -54,17 +61,29 @@ function decolage()
 	});
 }
 
+
+
 function start(socket) 
 {
   socket.emit('notification', 'Server online via socket!');
-    
+  
+ socket.on('decolage', function() {
+	   socket.emit('notification', 'decollage realise!!');
+	  decolage();
+	  } );
+	
   socket.on('called', function () {
     console.log("Request received.");
     listener.sockets.emit('notification', 'Yes still here! Want some data?');
+		  decolage();
+
   });   
 
-  socket.on('decolage', function(decolage) { start(decolage);} );
+	
 }
 
-listener.sockets.on('connection', function (socket) { start(socket);} );
+listener.sockets.on('connection', function (socket) { 
+ socket.emit('notification', 'Server online via socket!');
+start(socket);
+} );
 
