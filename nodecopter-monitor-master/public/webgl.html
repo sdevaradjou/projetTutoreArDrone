@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <!-- 1px transparent gif… -->
+    <img id="camImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+    <div id="battery">Battery: <span id="batteryMeter">NA</span>%</div>
+    <pre id="droneStateData"></pre>
+    <div id="nodecopter-webgl"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/three.js/build/three.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

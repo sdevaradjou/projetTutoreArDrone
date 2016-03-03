@@ -1,0 +1,27 @@
+{
+  "name": "nodecopter-monitor",
+  "description": "monitoring and remote-control for a nodecopter",
+  "version": "0.1.1",
+  "dependencies": {
+    "ar-drone": "*",
+    "express": "~3.0.0",
+    "nodecopter-gamepad": "0.0.1",
+    "socket.io": "~0.9.10"
+  },
+  "author": {
+    "name": "usefulthink",
+    "email": "m.schuhfuss@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "zaubernerd"
+    },
+    {
+      "name": "line-o"
+    }
+  ],
+  "main": "index.js",
+  "repository": "https://github.com/usefulthink/nodecopter-monitor.git",
+  "homepage": "https://github.com/usefulthink/nodecopter-monitor",
+  "license": "BSD"
+}

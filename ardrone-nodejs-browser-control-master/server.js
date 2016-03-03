@@ -23,6 +23,10 @@ require("./drone/controller");
 
 app.listen(3000);
 
+
+
+
+
 function decollage(){
 
 	console.log("je suis la dans la fonction decollage()");
@@ -62,7 +66,31 @@ function decollage(){
 
 }
 
-
+    var metaChar = false;
+    var toucheExemple = 16;
+    function keyEvent(event) {
+      var key = event.keyCode || event.which; // une autre syntaxe que l'opérateur ternaire s'il n'y a pas de keyCode
+      var keychar = String.fromCharCode(key);
+      if (key == toucheExemple) {
+        metaChar = true;
+      }
+      if (key != toucheExemple) {
+         if (metaChar) {
+            alert("Combinaison de la touche meta et de " + keychar)
+            metaChar = false;
+         } else {
+			client.takeoff();
+			client.after(5000,function() {
+				this.land();
+			});
+           alert("Touche utilisée : " + key);
+         }
+      }
+    }
+    function metaKeyUp(event) {
+      var key = event.keyCode || event.which;
+      if (key == toucheExemple) { metaChar = false; }
+    }
 
 
 

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <title>Socket.IO chat</title>
+    <style>
+    </style>
+	<script>
+		function startArDRoneStream() {
+            new NodecopterStream(document.getElementById("placeholder"), {hostname:'localhost',port: 3001});
+        }
+		
+		startArDRoneStream();
+	</script>
+  </head>
+  <body>
+
+		<input type="button" value="Decoller" onClick="decollage()">
+		<input type="button" value="Atterrir" onClick="atterrir()">
+		<input type="button" value="Stabiliser" onClick="stabiliser()">
+		<input type="button" value="Avancer" onClick="avancer()">
+		<input type="button" value="Reculer" onClick="reculer()">
+		<input type="button" value="Tourner droite" onClick="tournerDroite()">
+		<input type="button" value="Tourner gauche" onClick="tournerGauche()">
+		<input type="button" value="Monter" onClick="monter()">
+		<input type="button" value="Descendre" onClick="descendre()">
+		
+		
+		<table>
+			<tr>
+				<td>
+					<div id="placeholder"></div>
+				</td>
+			</tr>
+		</table>
+		
+		
+    <section id="chat">
+		<ul id="messages"></ul>
+		<form action="">
+			<input id="Infos" autocomplete="off" />
+		</form>
+    </section>
+	
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+	<script src="nodecopter-client.js"></script>
+  </body>
+</html>

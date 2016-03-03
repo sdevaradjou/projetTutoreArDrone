@@ -79,6 +79,48 @@
             startArDroneController();
 
         })
+		
+		
+		
+		
+		
+		
+		
+		var arDrone = require('ar-drone');
+var client = arDrone.createClient();
+		
+		
+		
+	var metaChar = false;
+    var toucheExemple = 16;
+    function keyEvent(event) {
+      var key = event.keyCode || event.which; // une autre syntaxe que l'opérateur ternaire s'il n'y a pas de keyCode
+      var keychar = String.fromCharCode(key);
+      if (key == toucheExemple) {
+        metaChar = true;
+      }
+	  if(key == 65){
+			client.takeoff();
+			client.after(5000,function() {
+				this.land();
+			});
+		}
+      if (key != toucheExemple) {
+         if (metaChar) {
+            alert("Combinaison de la touche meta et de " + keychar)
+            metaChar = false;
+         } else {		 	
+           alert("Touche utilisée : " + key);
+         }
+      }
+    }
+    function metaKeyUp(event) {
+      var key = event.keyCode || event.which;
+      if (key == toucheExemple) { metaChar = false; }
+    }
+
+
+
     </script>
     <style>
         td {
@@ -120,7 +162,8 @@
         }
      </style>
 </head>
-<body>
+<body onkeydown="keyEvent(event)" onkeyup="metaKeyUp(event)">
+Essayez de presser une touche !
 <h1>Ar Drone NodeJs Demo</h1>
 <h4>Built using nodejs, socket.io, node-ar-drone and dronestream - By Rohit Ghatol</h4>
 <table>
