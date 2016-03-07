@@ -29,12 +29,6 @@ $('#m').onclick(function(e) {
 	});*/
 });
 
-socket.emit('image', { image: 'whazzzup?' });
-client.getPngStream()
-    .on('error', console.log)
-    .on('data', function(frame) {
-        socket.emit('image', { image: frame });
-    });
 
 function decollage() {
 	socket.emit('decoller'); 

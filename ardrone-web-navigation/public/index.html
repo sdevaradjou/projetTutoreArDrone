@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Node JS Copter Demo</title>
+    <script src="nodecopter-client.js"></script>
+    <script src="jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+    <script>
+	$(function () {
+
+            function startArDRoneStream() {
+                new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+				  socket.on('event', function (data) {
+
+                    if(data.name=="battery"){
+                        $("#battery-indicator").css('width',data.value+'%');
+                        $("#battery-value").html(data.value+'%');
+                    }
+                });
+            }
+			
+			 
+            startArDRoneStream();
+         
+	})
+    </script>
+    <style>
+        td {
+            border:1px solid black;
+            border-radius:3px;
+            padding:10px;
+			width:440px;
+			
+        }
+		
+		 table {
+          
+			width:1350px;
+        }
+		
+        button{
+            font-size: 10pt;
+        }
+        #battery{
+            border:1px solid black;
+            width:1000px;
+            height:20px;
+            text-align: center;
+        }
+        .bar {
+            margin: 5px 0 3px;
+            border: 6px solid #333;
+            background: #333;
+            overflow: hidden;
+            border-radius: 50px;
+            -moz-border-radius: 50px;
+            -webkit-border-radius: 50px;
+            box-shadow: 1px 1px 1px #777;
+            -moz-box-shadow: 1px 1px 1px #777;
+            -webkit-box-shadow: 1px 1px 1px #777;
+        }
+        .bar > span {
+            display: block;
+            height: 20px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+        }
+		
+		 #placeholder{
+          width: 860px;
+		  height: 482px;
+        }
+
+        .color0 > span {
+            background-color: #FF0000;
+        }
+		
+		#canvas{
+		width:860px;
+		}
+		
+     </style>
+</head>
+<body>
+
+<table>
+    <tr>
+        <td >
+			<input type="button" value="Decoller" onClick="decollage()">
+			<input type="button" value="Atterrir" onClick="atterrir()">
+			<input type="button" value="Stabiliser" onClick="stabiliser()">
+			<input type="button" value="Avancer" onClick="avancer()">
+			<input type="button" value="Reculer" onClick="reculer()">
+			<input type="button" value="Tourner droite" onClick="tournerDroite()">
+			<input type="button" value="Tourner gauche" onClick="tournerGauche()">
+			<input type="button" value="Monter" onClick="monter()">
+			<input type="button" value="Descendre" onClick="descendre()">
+
+        </td>
+        <td>
+
+            <span>Battery</span> - <span id="battery-value"></span>
+            <div class="bar color0">
+                <span id="battery-indicator" style="width:50%"></span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="placeholder">
+				
+			</div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
