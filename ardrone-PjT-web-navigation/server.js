@@ -20,6 +20,15 @@ http.listen(3000, function(){
   console.log('Server is listening on *:3000');
 });
 
+  var callback = function(err) { if (err) console.log(err); };
+  client.config({ key: 'general:navdata_demo', value: 'FALSE'});
+  client.config({ key: 'control:altitude_max ', value: '300', timeout: 1000 });
+client.config({ key: 'control:outdoor', value: 'FALSE', timeout: 1000 });
+client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
+client.config({ key: 'video:video_codec', value: 'H264_720P_CODEC'});
+//client.config({ key: 'detect:groundstripe_colors ', value: 'FALSE'});
+
+
 io.on('connection', function(socket){
   /**
    * Log de connexion et de déconnexion des utilisateurs
@@ -28,17 +37,17 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function () {
 		console.log('utilisateur deconnecte');
 	});
- client.config('control:altitude_max', 1500);
+	
+	client.config('control:altitude_max', 1500);
+  
   /**
    * Réception de l'événement 'chat-message' et réémission vers tous les utilisateurs
    */
 	socket.on('decoller', function () {
-console.log('OK Je vais decoller');
+		console.log('OK Je vais decoller');
 		client.takeoff();
 	});
-  
- 
-  
+	
 	socket.on('atterrir', function () {
 		console.log('OK Je vais atterir');
 		client.land();
@@ -51,7 +60,7 @@ console.log('OK Je vais decoller');
 	
 	socket.on('avancer', function () {
 		console.log('OK avance');
-		client.front(0.1);
+		client.front(0.8);
 		client.after(1000, function() {
 			client.stop();
 		});
@@ -83,19 +92,19 @@ console.log('OK Je vais decoller');
 	
 	socket.on('tournerdroite', function () {
 		console.log('OK droite');
-		client.clockwise(0.5);
-		client.after(500, function() {
+		client.clockwise(0.1);
+		client.after(250, function() {
 			client.stop();
-			 client.config('demo:leftRightDegrees', 0.0);
 		});
+			
+	
 	});
 	
 	socket.on('tournergauche', function () {
 		console.log('OK gauche');
-		client.counterClockwise(0.5);
-		client.after(500, function() {
+		client.counterClockwise(0.1);
+		client.after(250, function() {
 			client.stop();
-			 client.config('demo:leftRightDegrees', 0.0);
 		});
 	});
 	
@@ -104,7 +113,12 @@ console.log('OK Je vais decoller');
         socket.emit('event', { name: 'battery',value: batteryLevel});
     },500);
   
+
   
-	client.on('navdata', console.log);
-  client.config('demo:leftRightDegrees', 0.0);
+	setInterval(function(){
+		client.on('navdata', console.log);
+	},3000);
+
+
+
 });

@@ -8,114 +8,257 @@
 	<script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
     <script>
-	$(function () {
-
-            function startArDRoneStream() {
-                new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
-				  socket.on('event', function (data) {
-
-                    if(data.name=="battery"){
-                        $("#battery-indicator").css('width',data.value+'%');
-                        $("#battery-value").html(data.value+'%');
-                    }
-                });
-            }
-			
-			 
-            startArDRoneStream();
-         
-	})
+		$(function () {
+			function startArDRoneStream() {
+				new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+				
+				socket.on('event', function (data) {
+					if(data.name=="battery"){
+						$("#battery-indicator").css('width',data.value+'%');
+						$("#battery-value").html(data.value+'%');
+					}
+				}); 
+			})
+			startArDRoneStream();	
+		}	
     </script>
     <style>
-        td {
-            border:1px solid black;
-            border-radius:3px;
-            padding:10px;
-			width:440px;
-			
-        }
-		
-		 table {
-          
-			width:1350px;
-        }
-		
-        button{
-            font-size: 10pt;
-        }
-        #battery{
-            border:1px solid black;
-            width:1000px;
-            height:20px;
-            text-align: center;
-        }
-        .bar {
-            margin: 5px 0 3px;
-            border: 6px solid #333;
-            background: #333;
-            overflow: hidden;
-            border-radius: 50px;
-            -moz-border-radius: 50px;
-            -webkit-border-radius: 50px;
-            box-shadow: 1px 1px 1px #777;
-            -moz-box-shadow: 1px 1px 1px #777;
-            -webkit-box-shadow: 1px 1px 1px #777;
-        }
-        .bar > span {
-            display: block;
-            height: 20px;
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-            -webkit-border-radius: 5px;
-        }
-		
-		 #placeholder{
-          width: 860px;
-		  height: 482px;
-        }
+		td {
+		border:1px solid black;
+		border-radius:3px;
+		padding:10px;
+		;
 
-        .color0 > span {
-            background-color: #FF0000;
-        }
-		
+		}
+
+		table {
+
+		width:500px;
+		}
+
+		.button  {
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		vertical-align: middle;
+		cursor: pointer;
+		background-color: #e7e7e7;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+		-webkit-transform: translateZ(0);
+		transform: translateZ(0);
+		box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		-moz-osx-font-smoothing: grayscale;
+		position: relative;
+		overflow: hidden;
+		}
+
+		.button:before {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		left: 50%;
+		right: 50%;
+		bottom: 0;
+		background: #2098d1;
+		height: 4px;
+		-webkit-transition-property: left, right;
+		transition-property: left, right;
+		-webkit-transition-duration: 0.3s;
+		transition-duration: 0.3s;
+		-webkit-transition-timing-function: ease-out;
+		transition-timing-function: ease-out;
+		}
+		.button:hover:before, .button:focus:before, .button:active:before {
+		left: 0;
+		right: 0;
+		}
+
+		h2{
+		text-align:center;
+		}
+
+		textarea{
+		resize: none;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		}
+
+		#battery{
+		border:1px solid black;
+		width:1000px;
+		height:20px;
+		text-align: center;
+		}
+		.bar {
+		margin: 5px 0 3px;
+		border: 6px solid #333;
+		background: #333;
+		overflow: hidden;
+		border-radius: 50px;
+		-moz-border-radius: 50px;
+		-webkit-border-radius: 50px;
+		box-shadow: 1px 1px 1px #777;
+		-moz-box-shadow: 1px 1px 1px #777;
+		-webkit-box-shadow: 1px 1px 1px #777;
+		}
+		.bar > span {
+		display: block;
+		height: 20px;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		}
+
+		#camera{
+
+		}
+
+		#boutons{
+		height:225px;
+		}
+
+		#placeholder{
+		width: 860px;
+		height: 360px;
+		}
+
+		.color0 > span {
+		background-color: #2098d1;
+		}
+
 		#canvas{
 		width:860px;
 		}
-		
+
+		#TDbatterie{
+		display:inline-block;
+		width:440px;
+		}
+
+		#infos{
+		}
+
+		#TRcamera{
+		display:table-cell;
+		}
+
+		.bouton{
+		padding : 0px;
+		border : none;
+		}
+
+		#TRinfo{
+		display:table-caption;
+
+		}
+
+		.TRboutons{
+		display: -moz-inline-stack;
+		}
+
+		#TRbatterie{
+		}
      </style>
 </head>
-<body>
 
-<table>
-    <tr>
-        <td >
-			<input type="button" value="Decoller" onClick="decollage()">
-			<input type="button" value="Atterrir" onClick="atterrir()">
-			<input type="button" value="Stabiliser" onClick="stabiliser()">
-			<input type="button" value="Avancer" onClick="avancer()">
-			<input type="button" value="Reculer" onClick="reculer()">
-			<input type="button" value="Tourner droite" onClick="tournerDroite()">
-			<input type="button" value="Tourner gauche" onClick="tournerGauche()">
-			<input type="button" value="Monter" onClick="monter()">
-			<input type="button" value="Descendre" onClick="descendre()">
+<body onkeydown="
+	switch(event.keyCode) {
+		case 16: //shift droit
+			decollage();
+			break;
 
-        </td>
-        <td>
+		case 96: //zero pav num
+			atterrir();
+			break;
 
-            <span>Battery</span> - <span id="battery-value"></span>
-            <div class="bar color0">
-                <span id="battery-indicator" style="width:50%"></span>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div id="placeholder">
-				
-			</div>
-        </td>
-    </tr>
-</table>
+		case 32: //espace
+			stabiliser();
+			break;
 
+		case 38: //touche avant
+			avancer();
+			break;
+
+		case 40: //touche arriere
+			reculer();
+			break;
+
+		case 39: //touche droite
+			tournerDroite();
+			break;
+
+		case 37: //touche gauche
+			tournerGauche();
+			break;
+
+		case 104: //8 pav num
+			monter();
+			break;
+
+		case 98: //2 pav num
+			descendre();
+			break;
+
+		default:
+			stop();
+}">
+	<table>
+		<tr>
+			<td id="boutons">
+				<table>
+					<tr class="TRboutons">
+					
+						<td class="bouton"><button class="button" onclick="decollage()">Decoller</button></td>
+						<td class="bouton"><button class="button" onclick="stabiliser()">Stabiliser</button></td>
+						<td class="bouton"><button class="button" onclick="atterrir()">Atterrir</button></td>
+					</tr>
+					
+					<br><tr class="TRboutons">
+						<td class="bouton"><button class="button" onclick="monter()">Monter</button></td>
+						<td class="bouton"><button class="button" onclick="avancer()">Avancer</button></td>
+						<td class="bouton"><button class="button" onclick="descendre()">Descendre</button></td>
+					</tr>
+						
+					<tr class="TRboutons">
+						<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche</button></td>
+						<td class="bouton"><button class="button" onclick="reculer()">Reculer</button></td>
+						<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite</button></td>
+					</tr>
+				</table>
+			</td>
+			
+			  
+			<td id="TDbatterie">
+
+			   <h2> <span>Capacite de charge</span> : <span id="battery-value"></span> </h2>
+				<div class="bar color0">
+					<span id="battery-indicator" style="width:50%"></span>
+				</div>
+			</td>
+		</tr>
+	  
+
+		<tr id="TRcamera">
+			<td id="camera">
+				<div id="placeholder">
+				</div>
+			</td>
+		</tr>
+		
+		<tr id="TRinfo">
+			<td id="infos">
+				<h2>Informations</h2>
+				<textarea name="textarea" id="textinfo" rows="20" cols="45"></textarea>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
