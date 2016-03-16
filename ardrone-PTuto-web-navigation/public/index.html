@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Node JS Copter Demo</title>
+    <script src="nodecopter-client.js"></script>
+    <script src="jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+	<script src="tracking-min.js"></script>
+	 <script src="../../dat-gui/build/dat.gui.min.js"></script> 
+<script src="assets/stats.min.js"></script>
+  <script src="assets/color_camera_gui.js"></script>
+    <script>
+$(function () {
+			function startArDRoneStream() {
+                   new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+
+			
+				socket.on('event', function (data) {
+					if(data.name=="battery"){
+						$("#battery-indicator").css('width',data.value+'%');
+						$("#battery-value").html(data.value+'%');
+					}
+				}); 
+			}
+				startArDRoneStream();
+			})
+			
+    </script>
+    <style>
+		td {
+		border:1px solid black;
+		border-radius:3px;
+		padding:10px;
+	
+		}
+
+		table {
+
+		width:500px;
+		}
+
+		.button  {
+		border: none;
+		color: black;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		vertical-align: middle;
+		cursor: pointer;
+		background-color: #e7e7e7;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+		-webkit-transform: translateZ(0);
+		transform: translateZ(0);
+		box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		-moz-osx-font-smoothing: grayscale;
+		position: relative;
+		overflow: hidden;
+		}
+
+		.button:before {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		left: 50%;
+		right: 50%;
+		bottom: 0;
+		background: #2098d1;
+		height: 4px;
+		-webkit-transition-property: left, right;
+		transition-property: left, right;
+		-webkit-transition-duration: 0.3s;
+		transition-duration: 0.3s;
+		-webkit-transition-timing-function: ease-out;
+		transition-timing-function: ease-out;
+		}
+		.button:hover:before, .button:focus:before, .button:active:before {
+		left: 0;
+		right: 0;
+		}
+
+		h2{
+		text-align:center;
+		}
+
+		textarea{
+		resize: none;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		}
+
+		#battery{
+		border:1px solid black;
+		width:1000px;
+		height:20px;
+		text-align: center;
+		}
+		.bar {
+		margin: 5px 0 3px;
+		border: 6px solid #333;
+		background: #333;
+		overflow: hidden;
+		border-radius: 50px;
+		-moz-border-radius: 50px;
+		-webkit-border-radius: 50px;
+		box-shadow: 1px 1px 1px #777;
+		-moz-box-shadow: 1px 1px 1px #777;
+		-webkit-box-shadow: 1px 1px 1px #777;
+		}
+		.bar > span {
+		display: block;
+		height: 20px;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		}
+
+		
+
+		#boutons{
+		height:225px;
+		}
+
+		#placeholder{
+		width: 860px;
+		height: 360px;
+		}
+
+		.color0 > span {
+		background-color: #2098d1;
+		}
+
+	
+
+		#TDbatterie{
+		display:inline-block;
+		width:440px;
+		}
+
+	
+
+		#TRcamera{
+		display:table-cell;
+		}
+
+		.bouton{
+		padding : 0px;
+		border : none;
+		}
+
+		#TRinfo{
+		display:table-caption;
+
+		}
+
+		.TRboutons{
+		display: -moz-inline-stack;
+		}
+
+		placeholder, canvas {
+			position: absolute;
+		}
+		
+     </style>
+</head>
+
+<body onkeydown="
+	switch(event.keyCode) {
+		case 16: //shift droit
+			decollage();
+			break;
+
+		case 96: //zero pav num
+			atterrir();
+			break;
+
+		case 32: //espace
+			stabiliser();
+			break;
+
+		case 38: //touche avant
+			avancer();
+			break;
+
+		case 40: //touche arriere
+			reculer();
+			break;
+
+		case 39: //touche droite
+			tournerDroite();
+			break;
+
+		case 37: //touche gauche
+			tournerGauche();
+			break;
+
+		case 65: //touche A
+			monter();
+			break;
+
+		case 87: //
+			descendre();
+			break;
+
+		default:
+			stop();
+}">
+	<table>
+		<tr>
+			<td id="boutons">
+				<table>
+					<tr class="TRboutons">
+					
+						<td class="bouton"><button class="button" onclick="decollage()">Decoller</button></td>
+						<td class="bouton"><button class="button" onclick="stabiliser()">Stabiliser</button></td>
+						<td class="bouton"><button class="button" onclick="atterrir()">Atterrir</button></td>
+					</tr>
+					
+					<br><tr class="TRboutons">
+						<td class="bouton"><button class="button" onclick="monter()">Monter</button></td>
+						<td class="bouton"><button class="button" onclick="avancer()">Avancer</button></td>
+						<td class="bouton"><button class="button" onclick="descendre()">Descendre</button></td>
+					</tr>
+						
+					<tr class="TRboutons">
+						<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche</button></td>
+						<td class="bouton"><button class="button" onclick="reculer()">Reculer</button></td>
+						<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite</button></td>
+					</tr>
+				</table>
+			</td>
+			
+			  
+			<td id="TDbatterie">
+
+			   <h2> <span>Capacite de charge</span> : <span id="battery-value"></span> </h2>
+				<div class="bar color0">
+					<span id="battery-indicator" style="width:50%"></span>
+				</div>
+			</td>
+		</tr>
+	  
+
+		<tr id="TRcamera">
+			<td id="camera">
+				<!--<canvas id="canvas" width="800" height="500"></canvas>!-->
+				<div id="placeholder" preload autoplay loop muted controls>
+					
+				</div>
+				
+			</td>
+		</tr>
+		
+		<tr id="TRinfo">
+			<td id="infos">
+				<h2>Informations</h2>
+				<textarea name="textarea" id="textinfo" rows="20" cols="45"></textarea>
+			</td>
+		</tr>
+			</table>
+	
+	
+	
+	  <script>
+  
+      var placeholder = document.getElementById('placeholder');
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+
+      tracking.ColorTracker.registerColor('purple', function(r, g, b) {
+        var dx = r - 120;
+        var dy = g - 60;
+        var dz = b - 210;
+
+        if ((b - g) >= 100 && (r - g) >= 60) {
+          return true;
+        }
+        return dx * dx + dy * dy + dz * dz < 3500;
+      });
+
+      var tracker = new tracking.ColorTracker(['blue', 'cyan','yellow','black','red','green','white','grey']);
+      tracker.setMinDimension(5);
+
+      tracking.track('#placeholder', tracker);
+
+      tracker.on('track', function(event) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        event.data.forEach(function(rect) {
+          if (rect.color === 'custom') {
+            rect.color = tracker.customColor;
+          }
+
+          context.strokeStyle = rect.color;
+          context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+          context.font = '11px Helvetica';
+          context.fillStyle = "#fff";
+          context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+          context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+        });
+      });
+
+      initGUIControllers(tracker);
+    
+  </script>
+	
+	
+</body>
+</html>
