@@ -5,14 +5,36 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-require("dronestream").listen(3001);
+//require("dronestream").listen(3001);
 //require('ar-drone-png-stream')(client, { port: 3002 });
 
 var arDrone = require('ar-drone');
 
 var client = arDrone.createClient();
 
-//require("./public/camera-feed");
+require('ar-drone-png-stream')(client, { port: 3001 });
+	
+var fs = require('fs');
+var pngStream = client.getPngStream();
+var frameCounter = 0;
+var period = 90; // Save a frame every 5000 ms.
+var lastFrameTime = 0;
+
+pngStream
+  .on('error', console.log)
+  .on('data', function(pngBuffer) {
+    var now = (new Date()).getTime();
+    if (now - lastFrameTime > period) {
+      frameCounter++;
+      lastFrameTime = now;
+      //console.log('Sauvegarde frame');
+      fs.writeFile('D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-PTuto-web-navigation\\public'+'\\frame' + '.png', pngBuffer, function(err) {
+        if (err) {
+          console.log('Erreur sauvegarde PNG: ' + err);
+        }
+      });
+    }
+  });
 
 // On gère les requêtes HTTP des utilisateurs en leur renvoyant les fichiers du dossier 'public'
 app.use("/", express.static(__dirname + "/public"));
@@ -21,6 +43,7 @@ app.use("/", express.static(__dirname + "/public"));
 // On lance le serveur en écoutant les connexions arrivant sur le port 3000
 http.listen(3000, function(){
   console.log('Server is listening on *:3000');
+  console.log('Sauvegarde des frames');
 });
 
   var callback = function(err) { if (err) console.log(err); };
@@ -30,61 +53,6 @@ client.config({ key: 'control:outdoor', value: 'FALSE', timeout: 1000 });
 client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
 //client.config({ key: 'video:video_codec', value: 'H264_720P_CODEC'});
 //client.config({ key: 'detect:groundstripe_colors ', value: 'FALSE'});
-
-
-
-
-
-
-
-/////////////////////////////////
-/*
-function startArDRonePhotos() {
-	//var http = require('http');
-	//var arDrone = require('ar-drone');
-	//var client = arDrone.createClient();
-		require('ar-drone-png-stream')(client, { port: 3002 });
-
-
-	module.exports = function(client, opts) {
-		
-		var png = null;
-		
-		opts = opts || {};
-
-		var server = http.createServer(function(req, res) {
-
-			if (!png){
-				png = client.getPngStream();
-				png.on('error', function (err) {
-					console.error('png stream ERROR: ' + err);
-				});
-			}
-
-			res.writeHead(200, { 'Content-Type': 'multipart/x-mixed-replace; boundary=--daboundary' });
-
-			png.on('data', sendPng);
-
-			function sendPng(buffer) {
-				//console.log(buffer.length);
-				res.write('--daboundary\nContent-Type: image/png\nContent-length: ' + buffer.length + '\n\n');
-				res.write(buffer);
-			}
-		
-		});
-
-		server.listen(opts.port || 3002);
-	
-	};
-}
-
-
-startArDRonePhotos();
-*/
-/////////////////////////////////
-
-
-
 
 
 io.on('connection', function(socket){
@@ -181,6 +149,36 @@ io.on('connection', function(socket){
 	},3000);*/
 
 
-
 });
+
+
+module.exports = function(client, opts) {
+	var png = null;
+
+	opts = opts || {};
+
+	var server = http.createServer(function(req, res) {
+
+	if (!png){
+	png = client.getPngStream();
+	png.on('error', function (err) {
+	console.error('png stream ERROR: ' + err);
+	});
+	}
+	//res.setHeader("Access-Control-Allow-Origin","http://localhost:3001");
+	res.writeHead(200, {
+	'Content-Type': 'application/json',
+	'Access-Control-Allow-Origin' : '*',
+	'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'
+	});
+
+	//console.log(buffer.length);
+	res.write('--daboundary\nContent-Type: image/png\nContent-length: ' + buffer.length + '\n\n');
+	res.write(buffer);
+
+	});
+
+	server.listen(opts.port || 3001);
+};
+
 

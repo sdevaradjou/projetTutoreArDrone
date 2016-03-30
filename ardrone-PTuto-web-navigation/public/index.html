@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<script src="tracking-min.js"></script>
 <head>
     <title>Node JS Copter Demo</title>
     <script src="nodecopter-client.js"></script>
@@ -7,15 +8,15 @@
 	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
-	<script src="index.js"></script>
+	<meta name="viewport" content="width=device-width, minimum-scale=0.1">
+	<script src="server.js"></script>
 
-
-	
     <script>
 		$(function () {
 			function startArDRoneStream() {
-			   new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
-
+			 //  new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+			}
+			function valeurBatterie() {
 				socket.on('event', function (data) {
 					if(data.name=="battery"){
 						$("#battery-indicator").css('width',data.value+'%');
@@ -24,15 +25,21 @@
 				}); 
 			}
 			
-			
-
-			
-			
-			startArDRoneStream();
+			valeurBatterie();
+			//startArDRoneStream();
 			
 		})	
     </script>
+	
     <style>
+	  .rect {
+			width: 80px;
+			height: 80px;
+			position: absolute;
+			left: -1000px;
+			top: -1000px;
+		  }
+	
 		td {
 		border:1px solid black;
 		border-radius:3px;
@@ -215,7 +222,7 @@
 
 		default:
 			stop();
-}">
+}" class="test">
 	<table>
 		<tr>
 			<td id="boutons">
@@ -252,26 +259,65 @@
 		</tr>
 	  
 
+	</table>
+	
+	
 		<tr id="TRcamera">
-			<td id="camera">
-				<!--<canvas id="canvas" width="800" height="500"></canvas>!-->
-				<div id="placeholder" preload autoplay loop muted controls>	
-				</div>		
-			</td>
-			<td>
-				<!-- <img id="img" alt="Right click to save me!" width="640" height="360"> -->
-				<img style="-webkit-user-select: none" src="http://localhost:3001/" width="640" height="360">
-			</td>
+			<img id="img" alt="TEST FRAME PAR FRAME!">
 		</tr>
-		
-		
-			</table>
-	
-	
-	
 
 
+	<script>
 	
+	
+			function chargeImages(){
+				setTimeout(chargeImages, 50);
+				document.getElementById('img').src = "frame.png"+"?a="+Math.random(1); // On charge l'image
+			}
+
+
+			function detect(){
+				var img = document.getElementById('img');
+				var demoContainer = document.querySelector('.test');
+
+				var tracker = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
+
+				var elements = document.getElementsByClassName('rect');
+				while(elements.length > 0){
+					elements[0].parentNode.removeChild(elements[0]);
+				}	
+
+				tracker.on('track', function(event) {
+					event.data.forEach(function(rect) {
+						console.log('trouver');
+						window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
+					});
+				});
+
+				tracking.track('#img', tracker);
+
+				window.plot = function(x, y, w, h, color) {
+					var rect = document.createElement('div');
+					document.querySelector('.test').appendChild(rect);
+					rect.classList.add('rect');
+					rect.style.border = '4px solid ' + color;
+					rect.style.width = w + 'px';
+					rect.style.height = h + 'px';
+					rect.style.left = (img.offsetLeft + x) + 'px';
+					rect.style.top = (img.offsetTop + y) + 'px';
+				};
+				
+				/*while(x<((640/2)-(rect.style.width/2))){
+					monter()
+				}*/
+				
+				setTimeout(detect, 100);
+			}
+
+			
+			chargeImages();
+			detect();
+		</script>
 	
 </body>
 </html>
