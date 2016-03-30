@@ -1,16 +1,9 @@
 var socket = io();
 
-var arDrone = require('ar-drone');
-var client = arDrone.createClient();
 
 ///////////////////
 
-var client = arDrone.createClient();
-client.getPngStream()
-    .on('error', console.log)
-    .on('data', function(frame) {
-        socket.emit('image', { image: frame });
-    });
+
 
 //////////////////
 

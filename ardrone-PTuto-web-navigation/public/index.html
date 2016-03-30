@@ -7,16 +7,15 @@
 	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
-	<script src="tracking-min.js"></script>
-	 <script src="../../dat-gui/build/dat.gui.min.js"></script> 
-<script src="assets/stats.min.js"></script>
-  <script src="assets/color_camera_gui.js"></script>
-    <script>
-$(function () {
-			function startArDRoneStream() {
-                   new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+	<script src="index.js"></script>
 
-			
+
+	
+    <script>
+		$(function () {
+			function startArDRoneStream() {
+			   new NodecopterStream(document.getElementById("placeholder"), {port: 3001});
+
 				socket.on('event', function (data) {
 					if(data.name=="battery"){
 						$("#battery-indicator").css('width',data.value+'%');
@@ -24,9 +23,14 @@ $(function () {
 					}
 				}); 
 			}
-				startArDRoneStream();
-			})
 			
+			
+
+			
+			
+			startArDRoneStream();
+			
+		})	
     </script>
     <style>
 		td {
@@ -129,7 +133,7 @@ $(function () {
 		}
 
 		#placeholder{
-		width: 860px;
+		width: 640px;
 		height: 360px;
 		}
 
@@ -251,65 +255,22 @@ $(function () {
 		<tr id="TRcamera">
 			<td id="camera">
 				<!--<canvas id="canvas" width="800" height="500"></canvas>!-->
-				<div id="placeholder" preload autoplay loop muted controls>
-					
-				</div>
-				
+				<div id="placeholder" preload autoplay loop muted controls>	
+				</div>		
+			</td>
+			<td>
+				<!-- <img id="img" alt="Right click to save me!" width="640" height="360"> -->
+				<img style="-webkit-user-select: none" src="http://localhost:3001/" width="640" height="360">
 			</td>
 		</tr>
 		
-		<tr id="TRinfo">
-			<td id="infos">
-				<h2>Informations</h2>
-				<textarea name="textarea" id="textinfo" rows="20" cols="45"></textarea>
-			</td>
-		</tr>
+		
 			</table>
 	
 	
 	
-	  <script>
-  
-      var placeholder = document.getElementById('placeholder');
-      var canvas = document.getElementById('canvas');
-      var context = canvas.getContext('2d');
 
-      tracking.ColorTracker.registerColor('purple', function(r, g, b) {
-        var dx = r - 120;
-        var dy = g - 60;
-        var dz = b - 210;
 
-        if ((b - g) >= 100 && (r - g) >= 60) {
-          return true;
-        }
-        return dx * dx + dy * dy + dz * dz < 3500;
-      });
-
-      var tracker = new tracking.ColorTracker(['blue', 'cyan','yellow','black','red','green','white','grey']);
-      tracker.setMinDimension(5);
-
-      tracking.track('#placeholder', tracker);
-
-      tracker.on('track', function(event) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        event.data.forEach(function(rect) {
-          if (rect.color === 'custom') {
-            rect.color = tracker.customColor;
-          }
-
-          context.strokeStyle = rect.color;
-          context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-          context.font = '11px Helvetica';
-          context.fillStyle = "#fff";
-          context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
-          context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
-        });
-      });
-
-      initGUIControllers(tracker);
-    
-  </script>
 	
 	
 </body>

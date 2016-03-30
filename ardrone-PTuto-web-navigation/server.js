@@ -6,6 +6,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 require("dronestream").listen(3001);
+//require('ar-drone-png-stream')(client, { port: 3002 });
 
 var arDrone = require('ar-drone');
 
@@ -31,7 +32,65 @@ client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
 //client.config({ key: 'detect:groundstripe_colors ', value: 'FALSE'});
 
 
+
+
+
+
+
+/////////////////////////////////
+/*
+function startArDRonePhotos() {
+	//var http = require('http');
+	//var arDrone = require('ar-drone');
+	//var client = arDrone.createClient();
+		require('ar-drone-png-stream')(client, { port: 3002 });
+
+
+	module.exports = function(client, opts) {
+		
+		var png = null;
+		
+		opts = opts || {};
+
+		var server = http.createServer(function(req, res) {
+
+			if (!png){
+				png = client.getPngStream();
+				png.on('error', function (err) {
+					console.error('png stream ERROR: ' + err);
+				});
+			}
+
+			res.writeHead(200, { 'Content-Type': 'multipart/x-mixed-replace; boundary=--daboundary' });
+
+			png.on('data', sendPng);
+
+			function sendPng(buffer) {
+				//console.log(buffer.length);
+				res.write('--daboundary\nContent-Type: image/png\nContent-length: ' + buffer.length + '\n\n');
+				res.write(buffer);
+			}
+		
+		});
+
+		server.listen(opts.port || 3002);
+	
+	};
+}
+
+
+startArDRonePhotos();
+*/
+/////////////////////////////////
+
+
+
+
+
 io.on('connection', function(socket){
+	
+	
+	
   /**
    * Log de connexion et de déconnexion des utilisateurs
    */
@@ -62,7 +121,7 @@ io.on('connection', function(socket){
 	
 	socket.on('avancer', function () {
 		console.log('OK avance');
-		client.front(0.8);
+		client.front(0.2);
 		client.after(1000, function() {
 			client.stop();
 		});
