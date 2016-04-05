@@ -41,55 +41,55 @@
 		  }
 	
 		td {
-		border:1px solid black;
+		<!--border:1px solid black;!-->
 		border-radius:3px;
-		padding:10px;
+	
 	
 		}
 
 		table {
 
-		width:500px;
+		width:730px;
 		}
 
 		.button  {
-		border: none;
-		color: black;
-		padding: 15px 32px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 4px 2px;
-		vertical-align: middle;
-		cursor: pointer;
-		background-color: #e7e7e7;
-		-webkit-tap-highlight-color: rgba(0,0,0,0);
-		-webkit-transform: translateZ(0);
-		transform: translateZ(0);
-		box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-		-webkit-backface-visibility: hidden;
-		backface-visibility: hidden;
-		-moz-osx-font-smoothing: grayscale;
-		position: relative;
-		overflow: hidden;
+border: none;
+color: black;
+padding: 10px 32px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin: 0px 0px 0px 0px;
+vertical-align: middle;
+cursor: pointer;
+background-color: #e7e7e7;
+-webkit-tap-highlight-color: rgba(0,0,0,0);
+-webkit-transform: translateZ(0);
+transform: translateZ(0);
+box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+-moz-osx-font-smoothing: grayscale;
+overflow: hidden;
+width: 243px;
 		}
 
 		.button:before {
-		content: "";
-		position: absolute;
-		z-index: -1;
-		left: 50%;
-		right: 50%;
-		bottom: 0;
-		background: #2098d1;
-		height: 4px;
-		-webkit-transition-property: left, right;
-		transition-property: left, right;
-		-webkit-transition-duration: 0.3s;
-		transition-duration: 0.3s;
-		-webkit-transition-timing-function: ease-out;
-		transition-timing-function: ease-out;
+content: "";
+position: absolute;
+z-index: -1;
+left: 50%;
+right: 50%;
+bottom: 0;
+background: #34A7C1;
+height: 4px;
+-webkit-transition-property: left, right;
+transition-property: left, right;
+-webkit-transition-duration: 0.3s;
+transition-duration: 0.3s;
+-webkit-transition-timing-function: ease-out;
+transition-timing-function: ease-out;
 		}
 		.button:hover:before, .button:focus:before, .button:active:before {
 		left: 0;
@@ -97,7 +97,9 @@
 		}
 
 		h2{
+		display:inline;
 		text-align:center;
+		margin-left:15px;
 		}
 
 		textarea{
@@ -114,26 +116,32 @@
 		text-align: center;
 		}
 		.bar {
-		margin: 5px 0 3px;
-		border: 6px solid #333;
-		background: #333;
-		overflow: hidden;
-		border-radius: 50px;
-		-moz-border-radius: 50px;
-		-webkit-border-radius: 50px;
-		box-shadow: 1px 1px 1px #777;
-		-moz-box-shadow: 1px 1px 1px #777;
-		-webkit-box-shadow: 1px 1px 1px #777;
+margin: 10px 0px 0px;
+border: 2px solid #333;
+background: #333;
+overflow: hidden;
+border-radius: 8px;
+-moz-border-radius: 50px;
+-webkit-border-radius: 50px;
+-moz-box-shadow: 1px 1px 1px #777;
+-webkit-box-shadow: 1px 1px 1px #777;
+width: 695px;
+display: inline-block;
+margin-left: 392px;
+background-color: lightgrey;
 		}
 		.bar > span {
 		display: block;
-		height: 20px;
+		height: 15px;
 		border-radius: 5px;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 		}
 
-		
+		#img{
+		    margin-left: 425px;
+			margin-top:50px;
+		}
 
 		#boutons{
 		height:225px;
@@ -145,7 +153,7 @@
 		}
 
 		.color0 > span {
-		background-color: #2098d1;
+		background-color: #34A7C1;
 		}
 
 	
@@ -155,7 +163,10 @@
 		width:440px;
 		}
 
-	
+	#batt{
+	    display: inline;
+    margin-left: 723px;
+	}
 
 		#TRcamera{
 		display:table-cell;
@@ -171,13 +182,100 @@
 
 		}
 
+		
+		
+		#infos{
+position: fixed;
+left: 1520px;
+top: 70px;
+height: 670px;
+		}
+		
+		#titre{
+background-color: lightgrey;
+height: 50px;
+width: 1692px;
+		}
+		
 		.TRboutons{
-		display: -moz-inline-stack;
+display: inline-flex;
+margin-left: 370px;
+background-color: #34A7C1;
 		}
 
 		placeholder, canvas {
 			position: absolute;
 		}
+		
+		
+		#separateurh{
+background-color: lightgrey;
+height: 3px;
+position: fixed;
+top: 278px;
+width: 1495px;
+		}
+		
+				#separateurv{
+position: fixed;
+left: 1500px;
+height: 694px;
+width: 3px;
+background-color: lightgray;
+top: 55px;
+		}
+		
+		.onoffswitch {
+position: fixed;
+width: 140px;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+top: 16px;
+left: 681px;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "Vol autonome";
+    padding-left: 10px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "Vol manuel";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 18px; margin: 6px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 105px;
+    border: 2px solid #999999; border-radius: 20px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+		
 		
      </style>
 </head>
@@ -223,49 +321,68 @@
 		default:
 			stop();
 }" class="test">
-	<table>
+<div id="titre">
+<div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+    <label class="onoffswitch-label" for="myonoffswitch">
+        <span class="onoffswitch-inner"></span>
+        <span class="onoffswitch-switch"></span>
+    </label>
+</div>
+</div>
+	<div id="divbouton"><table>
 		<tr>
 			<td id="boutons">
 				<table>
 					<tr class="TRboutons">
 					
-						<td class="bouton"><button class="button" onclick="decollage()">Decoller</button></td>
-						<td class="bouton"><button class="button" onclick="stabiliser()">Stabiliser</button></td>
-						<td class="bouton"><button class="button" onclick="atterrir()">Atterrir</button></td>
+						<td class="bouton"><button class="button" onclick="decollage()">Decoller [Maj.D]</button></td>
+						<td class="bouton"><button class="button" onclick="avancer()">Avancer [Fle.H]</button></td>	
+						<td class="bouton"><button class="button" onclick="monter()">Monter [A]</button></td>
 					</tr>
 					
-					<br><tr class="TRboutons">
-						<td class="bouton"><button class="button" onclick="monter()">Monter</button></td>
-						<td class="bouton"><button class="button" onclick="avancer()">Avancer</button></td>
-						<td class="bouton"><button class="button" onclick="descendre()">Descendre</button></td>
+					<tr class="TRboutons">
+					<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche [Fle.G]</button></td>
+						<td class="bouton"><button class="button" onclick="stabiliser()">Stabiliser [Esp]</button></td>				
+							<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite [Fle.D]</button></td>
 					</tr>
 						
 					<tr class="TRboutons">
-						<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche</button></td>
-						<td class="bouton"><button class="button" onclick="reculer()">Reculer</button></td>
-						<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite</button></td>
+						<td class="bouton"><button class="button" onclick="atterrir()">Atterrir [Pav.0]</button></td>
+						<td class="bouton"><button class="button" onclick="reculer()">Reculer [Fle.B]</button></td>
+						<td class="bouton"><button class="button" onclick="descendre()">Descendre [W]</button></td>
 					</tr>
 				</table>
+				
+				<div class="bar color0">
+					<span id="battery-indicator" style="width:50%"></span>
+				</div>
+			
+				<h3 id="batt"><span id="battery-value"></span></h3>
 			</td>
 			
 			  
-			<td id="TDbatterie">
+		<!--	<td id="TDbatterie">
 
 			   <h2> <span>Capacite de charge</span> : <span id="battery-value"></span> </h2>
 				<div class="bar color0">
 					<span id="battery-indicator" style="width:50%"></span>
 				</div>
 			</td>
+			!-->
 		</tr>
 	  
 
 	</table>
-	
-	
+	</div>
+	<div id="separateurh"></div>
 		<tr id="TRcamera">
 			<img id="img" alt="TEST FRAME PAR FRAME!">
 		</tr>
-
+<div id="separateurv"></div>
+		<div>
+	<textarea id="infos"></textarea>
+	</div>
 
 	<script>
 	
@@ -277,12 +394,18 @@
 
 
 			function detect(){
+			
+			
+		var inputElements = document.getElementById('myonoffswitch');
+      if(inputElements.checked){
+          
 				var img = document.getElementById('img');
 				var demoContainer = document.querySelector('.test');
 
-				var tracker = new tracking.ColorTracker(['magenta', 'cyan', 'yellow']);
+				var tracker = new tracking.ColorTracker(['yellow']);
 
 				var elements = document.getElementsByClassName('rect');
+				
 				while(elements.length > 0){
 					elements[0].parentNode.removeChild(elements[0]);
 				}	
@@ -291,6 +414,44 @@
 					event.data.forEach(function(rect) {
 						console.log('trouver');
 						window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
+						
+						
+						
+						/*if( (rect.y>((360/2)+20)-(rect.height/2)) && (rect.y>((360/2)-20)-(rect.height/2)) ){
+							while( (rect.y>((360/2)+20)-(rect.height/2)) && (rect.y>((360/2)-20)-(rect.height/2)) ){
+								descendreAuto();
+							}
+						}*/
+						
+						
+						
+						
+					
+						//console.log(rect.y);
+						var espaceLibreV = 360 -rect.height;
+						var espaceLibreH = 640 -rect.width;
+						var centreV = espaceLibreV / 2;
+						var centreH = espaceLibreH / 2;
+							
+						if(rect.y<centreV){
+							monterAuto();
+						}
+						if(rect.y>centreV ){
+							descendreAuto();
+						}
+						
+						if(rect.x<centreH){
+							gaucheAuto();
+						}
+						if(rect.x>centreH){
+							droiteAuto();
+						}
+						
+						avancerAuto();
+						
+						//stabiliser();
+						
+						
 					});
 				});
 
@@ -307,16 +468,25 @@
 					rect.style.top = (img.offsetTop + y) + 'px';
 				};
 				
-				/*while(x<((640/2)-(rect.style.width/2))){
-					monter()
-				}*/
 				
+				
+			
+				
+			}else{
+				var elements = document.getElementsByClassName('rect');
+				while(elements.length > 0){
+					elements[0].parentNode.removeChild(elements[0]);
+				}
+			}
+			
 				setTimeout(detect, 100);
+				
 			}
 
 			
 			chargeImages();
 			detect();
+			
 		</script>
 	
 </body>

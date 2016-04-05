@@ -65,6 +65,7 @@ io.on('connection', function(socket){
 	console.log('utilisateur connecte');
 	socket.on('disconnect', function () {
 		console.log('utilisateur deconnecte');
+		
 	});
 	
 	client.config('control:altitude_max', 1500);
@@ -75,6 +76,9 @@ io.on('connection', function(socket){
 	socket.on('decoller', function () {
 		console.log('OK Je vais decoller');
 		client.takeoff();
+		client.after(2000, function() {
+			client.stop();
+		});
 	});
 	
 	socket.on('atterrir', function () {
@@ -90,9 +94,7 @@ io.on('connection', function(socket){
 	socket.on('avancer', function () {
 		console.log('OK avance');
 		client.front(0.2);
-		client.after(1000, function() {
-			client.stop();
-		});
+		
 	});
 	
 	socket.on('reculer', function () {
@@ -136,6 +138,39 @@ io.on('connection', function(socket){
 			client.stop();
 		});
 	});
+	
+	
+	/////////////////////////////////////////////
+	
+	socket.on('avancerAuto', function () {
+		console.log('OK avance AUTO');
+		client.front(0.02);
+	});
+	
+	socket.on('monterAuto', function () {
+		console.log('OK monter AUTO');
+		client.up(0.03);
+	});
+		
+	socket.on('descendreAuto', function () {
+		console.log('OK descendre AUTO');
+		client.down(0.03);	
+	});
+	
+	socket.on('gaucheAuto', function () {
+		console.log('OK gauche AUTO');
+		client.left(0.06);	
+	});
+	
+	socket.on('droiteAuto', function () {
+		console.log('OK droite AUTO');
+		client.right(0.005);	
+	});
+	
+	/////////////////////////////////////////////
+	
+	
+	
 	
 	setInterval(function(){
         var batteryLevel = client.battery();
