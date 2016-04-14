@@ -11,6 +11,16 @@ var io = require('socket.io')(http);
 var arDrone = require('ar-drone');
 
 var client = arDrone.createClient();
+	var logBak = console.log;
+var logMessages = [];
+
+console.loga = function(value) {
+	//if(value=='Sauvegarde des frames'){
+		logMessages.push(value);
+		logBak.call(console, value);
+	//}
+
+};
 
 require('ar-drone-png-stream')(client, { port: 3001 });
 	
@@ -47,10 +57,14 @@ http.listen(3000, function(){
 });
 
   var callback = function(err) { if (err) console.log(err); };
-  client.config({ key: 'general:navdata_demo', value: 'FALSE'});
-  client.config({ key: 'control:altitude_max ', value: '300', timeout: 1000 });
-client.config({ key: 'control:outdoor', value: 'FALSE', timeout: 1000 });
-client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
+ // client.config({ key: 'general:navdata_demo', value: 'FALSE'});
+ // client.config({ key: 'control:altitude_max ', value: '300', timeout: 1000 });
+//client.config({ key: 'control:outdoor', value: 'FALSE', timeout: 1000 });
+//client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
+client.config('control:euler_angle_max', 0.10);
+client.config('control:outdoor_euler_angle_max', 0.10);
+client.config('control:control_vz_max', 200);
+
 //client.config({ key: 'video:video_codec', value: 'H264_720P_CODEC'});
 //client.config({ key: 'detect:groundstripe_colors ', value: 'FALSE'});
 
@@ -76,9 +90,11 @@ io.on('connection', function(socket){
 	socket.on('decoller', function () {
 		console.log('OK Je vais decoller');
 		client.takeoff();
-		client.after(2000, function() {
+		client.after(3000, function() {
 			client.stop();
+			 socket.emit('event', { name: "decollagefini",value: 0});
 		});
+		
 	});
 	
 	socket.on('atterrir', function () {
@@ -87,7 +103,7 @@ io.on('connection', function(socket){
 	});
   
 	socket.on('stabiliser', function () {
-		console.log('OK Je me stabilise');
+		//console.log('OK Je me stabilise');
 		client.stop();
 	});
 	
@@ -99,7 +115,7 @@ io.on('connection', function(socket){
 	
 	socket.on('reculer', function () {
 		console.log('OK recule');
-		client.back(0.1);
+		client.back(0.3);
 		client.after(1000, function() {
 			client.stop();
 		});
@@ -107,7 +123,7 @@ io.on('connection', function(socket){
 	
 	socket.on('monter', function () {
 		console.log('OK monter');
-		client.up(0.3);
+		client.up(0.5);
 		client.after(1000, function() {
 			client.stop();
 		});
@@ -115,7 +131,7 @@ io.on('connection', function(socket){
 		
 	socket.on('descendre', function () {
 		console.log('OK descendre');
-		client.down(0.3);
+		client.down(0.5);
 		client.after(1000, function() {
 			client.stop();
 		});
@@ -123,7 +139,7 @@ io.on('connection', function(socket){
 	
 	socket.on('tournerdroite', function () {
 		console.log('OK droite');
-		client.clockwise(0.1);
+		client.clockwise(0.3);
 		client.after(250, function() {
 			client.stop();
 		});
@@ -133,23 +149,41 @@ io.on('connection', function(socket){
 	
 	socket.on('tournergauche', function () {
 		console.log('OK gauche');
-		client.counterClockwise(0.1);
+		client.counterClockwise(0.3);
 		client.after(250, function() {
 			client.stop();
 		});
 	});
 	
+	socket.on('calibrer', function () {
+		console.log('OK Calibration');
+		client.calibrate(0);
+	});
+	
+	socket.on('inclinerD', function () {
+		console.log('OK incline droite');
+		client.right(0.2);
+		client.after(30, function() {
+			client.stop();
+		});
+	});
+	
+	socket.on('inclinerG', function () {
+		console.log('OK incline gauche');
+		client.left(0.4);
+		
+	});
 	
 	/////////////////////////////////////////////
 	
 	socket.on('avancerAuto', function () {
 		console.log('OK avance AUTO');
-		client.front(0.02);
+		client.front(0.01);
 	});
 	
 	socket.on('monterAuto', function () {
 		console.log('OK monter AUTO');
-		client.up(0.03);
+		client.up(0.02);
 	});
 		
 	socket.on('descendreAuto', function () {
@@ -167,24 +201,42 @@ io.on('connection', function(socket){
 		client.right(0.005);	
 	});
 	
+	socket.on('TournergaucheAuto', function () {
+		console.log('OK tournergauche AUTO');
+		client.counterClockwise(0.02);
+	});
+	
+	socket.on('TournerdroiteAuto', function () {
+		console.log('OK tournerdroite AUTO');
+		client.clockwise(0.2);
+		client.after(1000, function() {
+			client.counterClockwise(0.2);
+		});		
+		client.after(500, function() {
+			client.stop();
+		});	
+	});
+	
 	/////////////////////////////////////////////
-	
-	
-	
 	
 	setInterval(function(){
         var batteryLevel = client.battery();
         socket.emit('event', { name: 'battery',value: batteryLevel});
-    },500);
+    },200);
   
-
   
 	/*setInterval(function(){
-		client.on('navdata', console.log);
-	},3000);*/
 
+		client.on('navdata', console.loga);
+
+	
+	},3000);*/	
 
 });
+
+
+
+
 
 
 module.exports = function(client, opts) {

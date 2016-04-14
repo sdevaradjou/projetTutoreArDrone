@@ -9,7 +9,12 @@
 	<script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 	<meta name="viewport" content="width=device-width, minimum-scale=0.1">
+	<!--<script src="serverM.js"></script> -->
 	<script src="server.js"></script>
+	
+	
+	
+	
 
     <script>
 		$(function () {
@@ -127,7 +132,7 @@ border-radius: 8px;
 -webkit-box-shadow: 1px 1px 1px #777;
 width: 695px;
 display: inline-block;
-margin-left: 392px;
+margin-left: 342px;
 background-color: lightgrey;
 		}
 		.bar > span {
@@ -139,8 +144,8 @@ background-color: lightgrey;
 		}
 
 		#img{
-		    margin-left: 425px;
-			margin-top:50px;
+		   margin-left: 380px;
+margin-top: 60px;
 		}
 
 		#boutons{
@@ -164,8 +169,8 @@ background-color: lightgrey;
 		}
 
 	#batt{
-	    display: inline;
-    margin-left: 723px;
+	  display: inline;
+margin-left: 673px;
 	}
 
 		#TRcamera{
@@ -175,6 +180,14 @@ background-color: lightgrey;
 		.bouton{
 		padding : 0px;
 		border : none;
+		}
+		
+		.bouton2{
+	padding: 0px;
+border: none;
+position: fixed;
+top: 10px;
+border: 2px solid #34A7C1;
 		}
 
 		#TRinfo{
@@ -186,9 +199,10 @@ background-color: lightgrey;
 		
 		#infos{
 position: fixed;
-left: 1520px;
+left: 1415px;
 top: 70px;
 height: 670px;
+width: 276px;
 		}
 		
 		#titre{
@@ -198,11 +212,18 @@ width: 1692px;
 		}
 		
 		.TRboutons{
+    display: inline-flex;
+    margin-left: 320px;
+    background-color: #34A7C1;
+		}
+
+				.TRboutons2{
 display: inline-flex;
-margin-left: 370px;
+margin-left: 75px;
 background-color: #34A7C1;
 		}
 
+		
 		placeholder, canvas {
 			position: absolute;
 		}
@@ -210,15 +231,15 @@ background-color: #34A7C1;
 		
 		#separateurh{
 background-color: lightgrey;
-height: 3px;
+height: 2px;
 position: fixed;
-top: 278px;
-width: 1495px;
+top: 300px;
+width: 1395px;
 		}
 		
 				#separateurv{
 position: fixed;
-left: 1500px;
+left: 1400px;
 height: 694px;
 width: 3px;
 background-color: lightgray;
@@ -232,7 +253,7 @@ width: 140px;
 -moz-user-select: none;
 -ms-user-select: none;
 top: 16px;
-left: 681px;
+left: 630px;
 }
 .onoffswitch-checkbox {
     display: none;
@@ -310,17 +331,30 @@ left: 681px;
 			tournerGauche();
 			break;
 
-		case 65: //touche A
+		case 90: //touche Z
 			monter();
 			break;
 
-		case 87: //
+		case 88: //touche X
 			descendre();
 			break;
 
+		case 81: //touche Q
+			inclinerGauche();
+			break;
+			
+		case 68: //touche D
+			inclinerDroite();
+			break;
+			
+		case 67: //touche C
+			calibrer();
+			break;
+		
 		default:
 			stop();
 }" class="test">
+
 <div id="titre">
 <div class="onoffswitch">
     <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
@@ -338,19 +372,22 @@ left: 681px;
 					
 						<td class="bouton"><button class="button" onclick="decollage()">Decoller [Maj.D]</button></td>
 						<td class="bouton"><button class="button" onclick="avancer()">Avancer [Fle.H]</button></td>	
-						<td class="bouton"><button class="button" onclick="monter()">Monter [A]</button></td>
+						<td class="bouton"><button class="button" onclick="monter()">Monter [Z]</button></td>
 					</tr>
 					
-					<tr class="TRboutons">
-					<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche [Fle.G]</button></td>
+					<tr class="TRboutons2">
+						<td class="bouton"><button class="button" onclick="inclinerGauche()">Incliner gauche [Q]</button></td>
+						<td class="bouton"><button class="button" onclick="tournerGauche()">Tourner gauche [Fle.G]</button></td>
 						<td class="bouton"><button class="button" onclick="stabiliser()">Stabiliser [Esp]</button></td>				
-							<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite [Fle.D]</button></td>
+						<td class="bouton"><button class="button" onclick="tournerDroite()">Tourner droite [Fle.D]</button></td>
+						<td class="bouton"><button class="button" onclick="inclinerDroite()">Incliner droite [D]</button></td>
 					</tr>
 						
 					<tr class="TRboutons">
 						<td class="bouton"><button class="button" onclick="atterrir()">Atterrir [Pav.0]</button></td>
 						<td class="bouton"><button class="button" onclick="reculer()">Reculer [Fle.B]</button></td>
-						<td class="bouton"><button class="button" onclick="descendre()">Descendre [W]</button></td>
+						<td class="bouton"><button class="button" onclick="descendre()">Descendre [X]</button></td>
+						<td class="bouton2"><button class="button" onclick="calibrer()">Calibrer [C]</button></td>
 					</tr>
 				</table>
 				
@@ -377,7 +414,7 @@ left: 681px;
 	</div>
 	<div id="separateurh"></div>
 		<tr id="TRcamera">
-			<img id="img" alt="TEST FRAME PAR FRAME!">
+			<img id="img">
 		</tr>
 <div id="separateurv"></div>
 		<div>
@@ -386,6 +423,7 @@ left: 681px;
 
 	<script>
 	
+	var compteur = 0;
 	
 			function chargeImages(){
 				setTimeout(chargeImages, 50);
@@ -394,66 +432,113 @@ left: 681px;
 
 
 			function detect(){
-			
-			
-		var inputElements = document.getElementById('myonoffswitch');
-      if(inputElements.checked){
-          
+				var trouve = 0;
+				
+				var inputElements = document.getElementById('myonoffswitch');
+				if(inputElements.checked){
+			  
 				var img = document.getElementById('img');
 				var demoContainer = document.querySelector('.test');
+					
+				tracking.ColorTracker.registerColor('green', function(r, g, b) { //ajout de nouvelles couleurs
+					if (r < 50 && g > 200 && b < 50) {
+						return true;
+					}
+					return false;
+				});
 
-				var tracker = new tracking.ColorTracker(['yellow']);
+				var tracker = new tracking.ColorTracker(['yellow']); //detection de la couleur jaune
 
-				var elements = document.getElementsByClassName('rect');
-				
-				while(elements.length > 0){
+				var elements = document.getElementsByClassName('rect'); //recuperation du rectangle affiche
+					
+				while(elements.length > 0){ //tant que le rectangle courant est affiche on efface les rectangles precedents
 					elements[0].parentNode.removeChild(elements[0]);
 				}	
 
-				tracker.on('track', function(event) {
-					event.data.forEach(function(rect) {
+				trouve = 0;
+				tracker.on('track', function(event) { //evenement de la detection
+			
+					event.data.forEach(function(rect) { //pour chaque rectangle, on recupere ses coordonnees et on calcule une zone centree par rapport a la video,
+														//il faut que le rectangle se trouve a peu pres dans cette zone, pour cela il suffit de faire bouger le drone automatiquement 
+														//jusqu'a ce qu'on arrive a la bonne position du rectangle
+						trouve = 1;
+						compteur = 0;
 						console.log('trouver');
 						window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
-						
-						
-						
+								
+								
+								
 						/*if( (rect.y>((360/2)+20)-(rect.height/2)) && (rect.y>((360/2)-20)-(rect.height/2)) ){
 							while( (rect.y>((360/2)+20)-(rect.height/2)) && (rect.y>((360/2)-20)-(rect.height/2)) ){
 								descendreAuto();
 							}
 						}*/
-						
-						
-						
-						
-					
+								
+								
+							
 						//console.log(rect.y);
 						var espaceLibreV = 360 -rect.height;
 						var espaceLibreH = 640 -rect.width;
 						var centreV = espaceLibreV / 2;
 						var centreH = espaceLibreH / 2;
+						var essai=0;
+						var derniermouv=""
 							
-						if(rect.y<centreV){
+							
+						if(rect.y<centreV-20){
 							monterAuto();
+							if(rect.y<centreV-20){
+								essai=1;
+							}
 						}
-						if(rect.y>centreV ){
+						if(rect.y>centreV+20 ){
 							descendreAuto();
+							if(rect.y>centreV+20 ){
+							essai=1;
+							}
 						}
 						
-						if(rect.x<centreH){
+						if(rect.x<centreH-20){
 							gaucheAuto();
+							derniermouv="incgauche"
+							if(rect.x<centreH-20){
+								essai=1;
+							}
 						}
-						if(rect.x>centreH){
+						if(rect.x>centreH+20){
 							droiteAuto();
+							derniermouv="incdroite"
+							if(rect.x>centreH+20){
+							essai=1;
+						}
 						}
 						
-						avancerAuto();
-						
-						//stabiliser();
-						
-						
+						if(essai==0){
+							avancerAuto();
+						}
 					});
 				});
+				
+				/*if(trouve==0){ 
+					compteur =  compteur + 1;
+					console.log(compteur);
+					
+					if(compteur>=4 && compteur<20){
+						if (derniermouv="incgauche"){
+						tournerdroiteAuto();
+						}
+						if (derniermouv="incdroite"){
+						tournergaucheAuto();
+						}
+					}
+					
+					if(compteur>=20){
+						tournerdroiteAuto();
+					}
+					
+					
+					
+				}*/
 
 				tracking.track('#img', tracker);
 
@@ -468,24 +553,33 @@ left: 681px;
 					rect.style.top = (img.offsetTop + y) + 'px';
 				};
 				
-				
-				
-			
-				
 			}else{
 				var elements = document.getElementsByClassName('rect');
 				while(elements.length > 0){
 					elements[0].parentNode.removeChild(elements[0]);
 				}
 			}
-			
-				setTimeout(detect, 100);
-				
+				setTimeout(detect, 100);	
 			}
-
 			
+			
+			function incg(){
+				inclinerDroite();
+				setTimeout(incg,500);
+			}
+			
+			
+			//incg();
 			chargeImages();
-			detect();
+			
+			
+			socket.on('event', function (data) {
+				if(data.name=="decollagefini"){
+					detect();
+				}
+			});
+				
+			
 			
 		</script>
 	
