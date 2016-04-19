@@ -499,14 +499,14 @@ left: 630px;
 						}
 						
 						if(rect.x<centreH-20){
-							gaucheAuto();
+							inclinerGaucheAuto();
 							derniermouv="incgauche"
 							if(rect.x<centreH-20){
 								essai=1;
 							}
 						}
 						if(rect.x>centreH+20){
-							droiteAuto();
+							inclinerDroiteAuto();
 							derniermouv="incdroite"
 							if(rect.x>centreH+20){
 							essai=1;
@@ -525,15 +525,15 @@ left: 630px;
 					
 					if(compteur>=4 && compteur<20){
 						if (derniermouv="incgauche"){
-						tournerdroiteAuto();
+						tournerDroiteAuto();
 						}
 						if (derniermouv="incdroite"){
-						tournergaucheAuto();
+						tournerGaucheAuto();
 						}
 					}
 					
 					if(compteur>=20){
-						tournerdroiteAuto();
+						tournerDroiteAuto();
 					}
 					
 					

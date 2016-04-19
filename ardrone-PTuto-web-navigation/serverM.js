@@ -98,16 +98,16 @@ io.on('connection', function(socket){
    * Réception de l'événement 'chat-message' et réémission vers tous les utilisateurs
    */
 	socket.on('decoller', function () {
-		var mission1  = autonomy.createMission();
+		//var mission  = autonomy.createMission();
 		console.log('OK Je vais decoller');
-		mission1.takeoff();
-		mission1.zero();
+		mission.takeoff();
+		mission.zero();
 		
-		mission1.run(function (err, result) {
+		mission.run(function (err, result) {
 			if (err) {
 				console.trace("Oops, something bad happened: %s", err.message);
-				mission1.client().stop();
-				mission1.client().land();
+				mission.client().stop();
+				mission.client().land();
 			} else {
 				console.log("Mission success!");
 				//process.exit(0);
@@ -116,15 +116,15 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('atterrir', function () {
-		var mission2  = autonomy.createMission();
+		//var mission  = autonomy.createMission();
 		console.log('OK Je vais atterir');
-		mission2.land();
+		mission.land();
 		
-		mission2.run(function (err, result) {
+		mission.run(function (err, result) {
 			if (err) {
 				console.trace("Oops, something bad happened: %s", err.message);
-				mission2.client().stop();
-				mission2.client().land();
+				mission.client().stop();
+				mission.client().land();
 			} else {
 				console.log("Mission success!");
 				//process.exit(0);
@@ -342,14 +342,14 @@ io.on('connection', function(socket){
         socket.emit('event', { name: 'battery',value: batteryLevel});
     },200);
   
-  /*
+	/*
 	setInterval(function(){
 
 		client.on('navdata', console.loga);
 
 	
 	},3000);	
-*/
+	*/
 });
 
 

@@ -3,7 +3,7 @@ var socket = io();
 
 ///////////////////
 
-
+/*MODE MANUEL*/
 
 //////////////////
 
@@ -28,11 +28,11 @@ function reculer() {
 }
 
 function tournerDroite() {
-	socket.emit('tournerdroite'); 
+	socket.emit('tournerD'); 
 }
 
 function tournerGauche() {
-	socket.emit('tournergauche'); 
+	socket.emit('tournerG'); 
 }
 
 function monter() {
@@ -55,7 +55,14 @@ function inclinerDroite() {
 	socket.emit('inclinerD'); 
 }
 
+
+
 ////////////////////////////////////////
+
+/*MODE AUTO*/
+
+////////////////////////////////////////
+
 function monterAuto() {
 	socket.emit('monterAuto'); 
 }
@@ -68,25 +75,61 @@ function avancerAuto() {
 	socket.emit('avancerAuto'); 
 }
 
-function gaucheAuto() {
-	socket.emit('gaucheAuto'); 
+function inclinerGaucheAuto() {
+	socket.emit('inclinerGAuto'); 
 }
 
-function droiteAuto() {
-	socket.emit('droiteAuto'); 
+function inclinerDroiteAuto() {
+	socket.emit('inclinerDAuto'); 
 }
 
-function tournerdroiteAuto() {
-	socket.emit('TournerdroiteAuto'); 
+function tournerDroiteAuto() {
+	socket.emit('tournerDAuto'); 
 }
 
-function tournergaucheAuto() {
-	socket.emit('TournergaucheAuto'); 
+function tournerGaucheAuto() {
+	socket.emit('tournerGAuto'); 
 }
 
 
 
 //////////////////////////////////////
+
+/*MODE MANETTE*/
+
+//////////////////////////////////////
+
+function avancerManette() {
+	socket.emit('avancerManette'); 
+}
+
+function reculerManette() {
+	socket.emit('reculerManette'); 
+}
+
+function tournerDroiteManette() {
+	socket.emit('tournerDManette'); 
+}
+
+function tournerGaucheManette() {
+	socket.emit('tournerGManette'); 
+}
+
+function monterManette() {
+	socket.emit('monterManette'); 
+}
+
+function descendreManette() {
+	socket.emit('descendreManette'); 
+}
+
+function inclinerGaucheManette() {
+	socket.emit('inclinerGManette'); 
+}
+
+function inclinerDroiteManette() {
+	socket.emit('inclinerDManette'); 
+}
 
 
 
@@ -116,40 +159,43 @@ function tournergaucheAuto() {
 			joystickYh = applyDeadzone(gamepad.axes[2], 0.25) * speed;
 			joystickYv = applyDeadzone(gamepad.axes[3], 0.25) * speed;
 			
+			//JOYSTICK GAUCHE
 			//joy à droite -> incline droite
 			if(joystickXh>0){
-				inclinerDroite();
+				inclinerDroiteManette();
 				console.log("droite");
 			}
 			//joy a gauche -> incline gauche
 			if(joystickXh<0){
-				inclinerGauche();
+				inclinerGaucheManette();
 				console.log("gauche");
 			}
-			//joy en haut
+			//joy en haut -> avance
 			if(joystickXv<0){
-				avancer();
+				avancerManette();
 				console.log("avant");
 			}
-			//joy en bas
+			//joy en bas -> recule
 			if(joystickXv>0){
-				reculer();
+				reculerManette();
 				console.log("arriere");
 			}
 			
 			
+			//JOYSTICK DROIT
 			//joy à droite -> tourner droite
 			if(joystickYh>0){
-				tournerDroite();
+				tournerDroiteManette();
 				console.log("droite");
 			}
 			//joy a gauche -> tourner gauche
 			if(joystickYh<0){
-				tournerGauche();
+				tournerGaucheManette();
 				console.log("gauche");
 			}
 			
 			
+			//BOUTONS
 			//A
 			if(gamepad.buttons[0].pressed == true){
 					decollage();
@@ -172,12 +218,12 @@ function tournergaucheAuto() {
 			
 			//RT
 			if(gamepad.buttons[7].value > 0.5){
-					monter();
+					monterManette();
 			}
 			
 			//LT
 			if(gamepad.buttons[6].value > 0.5){
-					descendre();
+					descendreManette();
 			}
 		}
 		window.requestAnimationFrame(gameloop);

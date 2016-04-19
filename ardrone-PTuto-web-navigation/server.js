@@ -56,9 +56,9 @@ http.listen(3000, function(){
   console.log('Sauvegarde des frames');
 });
 
-  var callback = function(err) { if (err) console.log(err); };
- // client.config({ key: 'general:navdata_demo', value: 'FALSE'});
- // client.config({ key: 'control:altitude_max ', value: '300', timeout: 1000 });
+var callback = function(err) { if (err) console.log(err); };
+// client.config({ key: 'general:navdata_demo', value: 'FALSE'});
+// client.config({ key: 'control:altitude_max ', value: '300', timeout: 1000 });
 //client.config({ key: 'control:outdoor', value: 'FALSE', timeout: 1000 });
 //client.config({ key: 'control:manual_trim', value: 'TRUE', timeout: 1000 });
 client.config('control:euler_angle_max', 0.10);
@@ -84,17 +84,19 @@ io.on('connection', function(socket){
 	
 	client.config('control:altitude_max', 1500);
   
-  /**
-   * Réception de l'événement 'chat-message' et réémission vers tous les utilisateurs
-   */
+  
+	//////////////////////////////////////////////////////////
+
+	/*MESSAGES MANUEL*/
+
+	//////////////////////////////////////////////////////////
 	socket.on('decoller', function () {
 		console.log('OK Je vais decoller');
 		client.takeoff();
 		client.after(3000, function() {
 			client.stop();
-			 socket.emit('event', { name: "decollagefini",value: 0});
+			socket.emit('event', { name: "decollagefini",value: 0});
 		});
-		
 	});
 	
 	socket.on('atterrir', function () {
@@ -103,14 +105,16 @@ io.on('connection', function(socket){
 	});
   
 	socket.on('stabiliser', function () {
-		//console.log('OK Je me stabilise');
+		console.log('OK Je me stabilise');
 		client.stop();
 	});
 	
 	socket.on('avancer', function () {
 		console.log('OK avance');
 		client.front(0.2);
-		
+		client.after(1000, function() {
+			client.stop();
+		});
 	});
 	
 	socket.on('reculer', function () {
@@ -137,17 +141,15 @@ io.on('connection', function(socket){
 		});
 	});
 	
-	socket.on('tournerdroite', function () {
+	socket.on('tournerD', function () {
 		console.log('OK droite');
 		client.clockwise(0.3);
 		client.after(250, function() {
 			client.stop();
 		});
-			
-	
 	});
 	
-	socket.on('tournergauche', function () {
+	socket.on('tournerG', function () {
 		console.log('OK gauche');
 		client.counterClockwise(0.3);
 		client.after(250, function() {
@@ -174,8 +176,13 @@ io.on('connection', function(socket){
 		
 	});
 	
-	/////////////////////////////////////////////
 	
+	
+	//////////////////////////////////////////////////////////
+
+	/*MESSAGES AUTO*/
+
+	//////////////////////////////////////////////////////////
 	socket.on('avancerAuto', function () {
 		console.log('OK avance AUTO');
 		client.front(0.01);
@@ -191,22 +198,22 @@ io.on('connection', function(socket){
 		client.down(0.03);	
 	});
 	
-	socket.on('gaucheAuto', function () {
+	socket.on('inclinerGAuto', function () {
 		console.log('OK gauche AUTO');
 		client.left(0.06);	
 	});
 	
-	socket.on('droiteAuto', function () {
+	socket.on('inclinerDAuto', function () {
 		console.log('OK droite AUTO');
 		client.right(0.005);	
 	});
 	
-	socket.on('TournergaucheAuto', function () {
+	socket.on('tournerGAuto', function () {
 		console.log('OK tournergauche AUTO');
 		client.counterClockwise(0.02);
 	});
 	
-	socket.on('TournerdroiteAuto', function () {
+	socket.on('tournerDAuto', function () {
 		console.log('OK tournerdroite AUTO');
 		client.clockwise(0.2);
 		client.after(1000, function() {
@@ -217,8 +224,56 @@ io.on('connection', function(socket){
 		});	
 	});
 	
-	/////////////////////////////////////////////
 	
+	
+	//////////////////////////////////////////////////////////
+
+	/*MESSAGES MANETTE*/
+
+	//////////////////////////////////////////////////////////
+	socket.on('avancerManette', function () {
+		console.log('OK avance');
+		client.front(0.2);
+	});
+	
+	socket.on('reculerManette', function () {
+		console.log('OK recule');
+		client.back(0.3);
+	});
+	
+	socket.on('monterManette', function () {
+		console.log('OK monter');
+		client.up(0.5);
+	});
+		
+	socket.on('descendreManette', function () {
+		console.log('OK descendre');
+		client.down(0.5);
+	});
+	
+	socket.on('tournerDManette', function () {
+		console.log('OK droite');
+		client.clockwise(0.3);
+	});
+	
+	socket.on('tournerGManette', function () {
+		console.log('OK gauche');
+		client.counterClockwise(0.3);
+	});
+	
+	socket.on('inclinerDManette', function () {
+		console.log('OK incline droite');
+		client.right(0.2);
+	});
+	
+	socket.on('inclinerGManette', function () {
+		console.log('OK incline gauche');
+		client.left(0.4);
+	});
+	
+	
+	
+	////////////////////////////////////////////
 	setInterval(function(){
         var batteryLevel = client.battery();
         socket.emit('event', { name: 'battery',value: batteryLevel});
