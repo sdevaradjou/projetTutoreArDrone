@@ -30,6 +30,149 @@
 				}); 
 			}
 			
+			
+			function recupereNavdata(){
+			
+			var altitude;	
+			var pitch;
+			var roll;
+			var yaw; 
+			var vx;   
+			var vy;    
+			var vz;    
+			var flyState; 
+			
+			var motorProblem;
+			var communicationLost;
+			var softwareFault;
+			var lowBattery;
+			var MagnometerNeedsCalibration;
+			var tooMuchWind;
+			var ultrasonicSensorDeaf;
+			
+				socket.on('event', function (data) {
+					if(data.name=="altitude"){
+						 altitude=data.value;
+					}
+					
+					
+					if(data.name=="pitch"){
+						pitch=data.value;
+					}
+					
+					if(data.name=="roll"){
+						roll=data.value;
+					}
+					
+					if(data.name=="yaw"){
+						yaw=data.value;
+					}
+					
+					if(data.name=="vx"){
+						vx=data.value;
+					}
+					
+					if(data.name=="vy"){
+						vy=data.value;
+					}
+					
+					if(data.name=="vz"){
+						vz=data.value;
+					}
+					
+					if(data.name=="flyState"){
+						flyState=data.value;
+					}
+					
+					if(data.name=="motorProblem"){
+						motorProblem=data.value;
+					}
+					
+					if(data.name=="communicationLost"){
+						communicationLost=data.value;
+					}
+					
+					if(data.name=="softwareFault"){
+						softwareFault=data.value;
+					}
+					
+					if(data.name=="lowBattery"){
+						lowBattery=data.value;
+					}
+					
+					if(data.name=="MagnometerNeedsCalibration"){
+						MagnometerNeedsCalibration=data.value;
+					}
+					
+					if(data.name=="tooMuchWind"){
+						tooMuchWind=data.value;
+					}
+					
+					if(data.name=="ultrasonicSensorDeaf"){
+						ultrasonicSensorDeaf=data.value;
+					}
+
+					document.getElementById("infos").value ="DONNEES DE VOL"
+															+ "\r\rAltitude: " + altitude 
+															+ "\rPitch: " + pitch 
+															+ "\rRoll: " + roll 
+															+ "\rYaw: " + yaw 
+															+ "\rX: " + vx 
+															+ "\rY: " + vy 
+															+ "\rZ: " + vz 
+															+ "\rEtat de vol: " + flyState
+															+ "\r\r\rPROBLEMES DETECTES"
+															+ "\r\rProbleme moteur: " + motorProblem 
+															+ "\rProbleme capteur: " + ultrasonicSensorDeaf 
+															+ "\rCommunication perdue: " + communicationLost 
+															+ "\rErreur logiciel: " + softwareFault 
+															+ "\rBatterie faible: " + lowBattery 
+															+ "\rA calibrer: " + MagnometerNeedsCalibration 
+															+ "\rVent fort: " + tooMuchWind 
+															
+					/*
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+					
+					if(data.name=="altitude"){
+						document.getElementById("infos").value = "Altitude: " + data.value;
+					}
+						
+			socket.emit('event', { name: 'pitch',value: pitch});
+			socket.emit('event', { name: 'roll',value: roll});
+			socket.emit('event', { name: 'yaw',value: yaw});
+			socket.emit('event', { name: 'vx',value: vx});
+			socket.emit('event', { name: 'vy',value: vy});
+			socket.emit('event', { name: 'vz',value: vz});
+			socket.emit('event', { name: 'altitudeMeters',value: AltitudeMeters});
+			socket.emit('event', { name: 'flyState',value: FlyState});
+					
+					*/
+				}); 
+			}
+			
+			recupereNavdata();
 			valeurBatterie();
 			//startArDRoneStream();
 			
@@ -112,6 +255,7 @@ transition-timing-function: ease-out;
 		display: block;
 		margin-left: auto;
 		margin-right: auto;
+		font-size: 18px;
 		}
 
 		#battery{

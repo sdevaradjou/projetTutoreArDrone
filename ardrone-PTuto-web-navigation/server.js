@@ -280,12 +280,48 @@ io.on('connection', function(socket){
     },200);
   
   
-	/*setInterval(function(){
-
-		client.on('navdata', console.loga);
-
+		
 	
-	},3000);*/	
+		client.on('navdata', function(data) {
+			if (!data.demo) return;
+			var altitude=data.demo.altitude;	
+			var pitch = data.demo.rotation.pitch;
+			var roll  = data.demo.rotation.roll;
+			var yaw   = data.demo.rotation.yaw;
+			var vx    = data.demo.velocity.x;
+			var vy    = data.demo.velocity.y;
+			var vz    = data.demo.velocity.z;
+			var FlyState = data.demo.flyState;
+			
+			var motorProblem = data.droneState.motorProblem;
+			var communicationLost = data.droneState.communicationLost;
+			var softwareFault = data.droneState.softwareFault;
+			var lowBattery = data.droneState.lowBattery;
+			var MagnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
+			var tooMuchWind = data.droneState.tooMuchWind;
+			var ultrasonicSensorDeaf = data.droneState.ultrasonicSensorDeaf;
+			
+			//console.log(MagnometerNeedsCalibration)
+			
+			socket.emit('event', { name: 'altitude',value: altitude});
+			socket.emit('event', { name: 'pitch',value: pitch});
+			socket.emit('event', { name: 'roll',value: roll});
+			socket.emit('event', { name: 'yaw',value: yaw});
+			socket.emit('event', { name: 'vx',value: vx});
+			socket.emit('event', { name: 'vy',value: vy});
+			socket.emit('event', { name: 'vz',value: vz});
+			socket.emit('event', { name: 'flyState',value: FlyState});
+			
+			socket.emit('event', { name: 'motorProblem',value: motorProblem});
+			socket.emit('event', { name: 'communicationLost',value: communicationLost});
+			socket.emit('event', { name: 'softwareFault',value: softwareFault});
+			socket.emit('event', { name: 'lowBattery',value: lowBattery});
+			socket.emit('event', { name: 'MagnometerNeedsCalibration',value: MagnometerNeedsCalibration});
+			socket.emit('event', { name: 'tooMuchWind',value: tooMuchWind});
+			socket.emit('event', { name: 'ultrasonicSensorDeaf',value: ultrasonicSensorDeaf});
+
+		});
+
 
 });
 
