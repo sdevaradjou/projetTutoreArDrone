@@ -1,4 +1,8 @@
 var socket = io();
+var X = 0;
+var Y = 0;
+var B = 0;
+var A = 0;
 
 
 ///////////////////
@@ -150,7 +154,7 @@ function inclinerDroiteManette() {
 
 	
     gameloop = function(){
-			
+	
 		gamepad = navigator.getGamepads()[0];
 		if(gamepad){
 		  
@@ -161,22 +165,38 @@ function inclinerDroiteManette() {
 			
 			//JOYSTICK GAUCHE
 			//joy à droite -> incline droite
-			if(joystickXh>0){
+			if(joystickXh>0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				inclinerDroiteManette();
 				console.log("droite");
 			}
 			//joy a gauche -> incline gauche
-			if(joystickXh<0){
+			if(joystickXh<-0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				inclinerGaucheManette();
 				console.log("gauche");
 			}
 			//joy en haut -> avance
-			if(joystickXv<0){
+			if(joystickXv<-0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				avancerManette();
 				console.log("avant");
 			}
 			//joy en bas -> recule
-			if(joystickXv>0){
+			if(joystickXv>0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				reculerManette();
 				console.log("arriere");
 			}
@@ -184,12 +204,20 @@ function inclinerDroiteManette() {
 			
 			//JOYSTICK DROIT
 			//joy à droite -> tourner droite
-			if(joystickYh>0){
+			if(joystickYh>0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				tournerDroiteManette();
 				console.log("droite");
 			}
 			//joy a gauche -> tourner gauche
-			if(joystickYh<0){
+			if(joystickYh<-0.7){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 				tournerGaucheManette();
 				console.log("gauche");
 			}
@@ -198,31 +226,64 @@ function inclinerDroiteManette() {
 			//BOUTONS
 			//A
 			if(gamepad.buttons[0].pressed == true){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = A+1;
+				if(A == 1){
 					decollage();
+					
+				}
 			}
 			
 			//B
 			if(gamepad.buttons[1].pressed == true){
+				A = 0;
+				X= 0;
+				Y= 0;
+				B = B+1;
+				if(B == 1){
 					atterrir();
+				}
 			}
 			
 			//X
 			if(gamepad.buttons[2].pressed == true){
+				A = 0;
+				B= 0;
+				Y= 0;
+				X = X+1;
+				if(X == 1){
 					stabiliser();
+				}
 			}
 			
 			//Y
 			if(gamepad.buttons[3].pressed == true){
+				A = 0;
+				X= 0;
+				B= 0;
+				Y = Y+1;
+				if(Y == 1){
 					calibrer();
+				}
 			}
 			
 			//RT
 			if(gamepad.buttons[7].value > 0.5){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 					monterManette();
 			}
 			
 			//LT
 			if(gamepad.buttons[6].value > 0.5){
+				X= 0;
+				Y= 0;
+				B= 0;
+				A = 0;
 					descendreManette();
 			}
 		}

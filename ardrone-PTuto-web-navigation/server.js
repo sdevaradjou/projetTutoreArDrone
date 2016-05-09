@@ -4,6 +4,10 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var Worker = require("tiny-worker");
+var worker;
+console.log("worker lance: " + worker)
+
 
 //require("dronestream").listen(3001);
 //require('ar-drone-png-stream')(client, { port: 3002 });
@@ -85,6 +89,75 @@ io.on('connection', function(socket){
 	client.config('control:altitude_max', 1500);
   
   
+
+	var altitude;	
+	var pitch;
+	var roll;
+	var yaw;
+	var vx;
+	var vy;
+	var vz;
+	var FlyState;
+	
+	
+	var motorProblem;
+	var communicationLost;
+	var softwareFault;
+	var lowBattery;
+	var MagnometerNeedsCalibration;
+	var tooMuchWind;
+	var ultrasonicSensorDeaf;
+	
+	var activeStabi = 0;
+	var bloqueStabi = 0;
+  
+  
+  
+	//////////////////////////////////////////////////////////
+	client.on('navdata', function(data) {
+		if (!data.demo) return;
+		altitude=data.demo.altitude;	
+		pitch = data.demo.rotation.pitch;
+		roll  = data.demo.rotation.roll;
+		yaw   = data.demo.rotation.yaw;
+		vx    = data.demo.velocity.x;
+		vy    = data.demo.velocity.y;
+		vz    = data.demo.velocity.z;
+		FlyState = data.demo.flyState;
+		
+		motorProblem = data.droneState.motorProblem;
+		communicationLost = data.droneState.communicationLost;
+		softwareFault = data.droneState.softwareFault;
+		lowBattery = data.droneState.lowBattery;
+		MagnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
+		tooMuchWind = data.droneState.tooMuchWind;
+		ultrasonicSensorDeaf = data.droneState.ultrasonicSensorDeaf;
+		
+		//console.log(MagnometerNeedsCalibration)
+		
+		socket.emit('event', { name: 'altitude',value: altitude});
+		socket.emit('event', { name: 'pitch',value: pitch});
+		socket.emit('event', { name: 'roll',value: roll});
+		socket.emit('event', { name: 'yaw',value: yaw});
+		socket.emit('event', { name: 'vx',value: vx});
+		socket.emit('event', { name: 'vy',value: vy});
+		socket.emit('event', { name: 'vz',value: vz});
+		socket.emit('event', { name: 'flyState',value: FlyState});
+		
+		socket.emit('event', { name: 'motorProblem',value: motorProblem});
+		socket.emit('event', { name: 'communicationLost',value: communicationLost});
+		socket.emit('event', { name: 'softwareFault',value: softwareFault});
+		socket.emit('event', { name: 'lowBattery',value: lowBattery});
+		socket.emit('event', { name: 'MagnometerNeedsCalibration',value: MagnometerNeedsCalibration});
+		socket.emit('event', { name: 'tooMuchWind',value: tooMuchWind});
+		socket.emit('event', { name: 'ultrasonicSensorDeaf',value: ultrasonicSensorDeaf});
+
+	});
+	//////////////////////////////////////////////////////////
+  
+  
+  
+  
 	//////////////////////////////////////////////////////////
 
 	/*MESSAGES MANUEL*/
@@ -93,24 +166,34 @@ io.on('connection', function(socket){
 	socket.on('decoller', function () {
 		console.log('OK Je vais decoller');
 		client.takeoff();
-		client.after(3000, function() {
+		client.after(6000, function() {
 			client.stop();
 			socket.emit('event', { name: "decollagefini",value: 0});
 		});
 	});
 	
 	socket.on('atterrir', function () {
-		console.log('OK Je vais atterir');
+		activeStabi = 0;
+		
+		console.log('OK Je vais atterir ' + activeStabi);
 		client.land();
+		socket.emit('event', { name: "decollagefini",value: 1});
 	});
   
 	socket.on('stabiliser', function () {
-		console.log('OK Je me stabilise');
 		client.stop();
+		worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-PTuto-web-navigation\\worker.js");
+		console.log("worker lance: " + worker)
+		worker.postMessage({ name: 'yaw',value: yaw});
+		worker.postMessage({ name: 'roll',value: roll});
+		worker.postMessage({ name: 'pitch',value: pitch});
+		worker.postMessage({ name: 'altitude',value: altitude});
+		console.log('OK Stabilise avec thread');
 	});
 	
 	socket.on('avancer', function () {
-		console.log('OK avance');
+		activeStabi = 0;
+		console.log('OK avance' + activeStabi);
 		client.front(0.2);
 		client.after(1000, function() {
 			client.stop();
@@ -118,7 +201,8 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('reculer', function () {
-		console.log('OK recule');
+		activeStabi = 0;
+		console.log('OK recule' + activeStabi);
 		client.back(0.3);
 		client.after(1000, function() {
 			client.stop();
@@ -126,7 +210,8 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('monter', function () {
-		console.log('OK monter');
+		activeStabi = 0;
+		console.log('OK monter' + activeStabi);
 		client.up(0.5);
 		client.after(1000, function() {
 			client.stop();
@@ -134,7 +219,8 @@ io.on('connection', function(socket){
 	});
 		
 	socket.on('descendre', function () {
-		console.log('OK descendre');
+		activeStabi = 0;
+		console.log('OK descendre' + activeStabi);
 		client.down(0.5);
 		client.after(1000, function() {
 			client.stop();
@@ -142,7 +228,8 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('tournerD', function () {
-		console.log('OK droite');
+		activeStabi = 0;
+		console.log('OK droite' + activeStabi);
 		client.clockwise(0.3);
 		client.after(250, function() {
 			client.stop();
@@ -150,7 +237,8 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('tournerG', function () {
-		console.log('OK gauche');
+		activeStabi = 0;
+		console.log('OK gauche' + activeStabi);
 		client.counterClockwise(0.3);
 		client.after(250, function() {
 			client.stop();
@@ -158,12 +246,14 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('calibrer', function () {
+		activeStabi = 0;
 		console.log('OK Calibration');
 		client.calibrate(0);
 	});
 	
 	socket.on('inclinerD', function () {
-		console.log('OK incline droite');
+		activeStabi = 0;
+		console.log('OK incline droite' + activeStabi);
 		client.right(0.2);
 		client.after(30, function() {
 			client.stop();
@@ -171,7 +261,8 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('inclinerG', function () {
-		console.log('OK incline gauche');
+		activeStabi = 0;
+		console.log('OK incline gauche' + activeStabi);
 		client.left(0.4);
 		
 	});
@@ -184,6 +275,7 @@ io.on('connection', function(socket){
 
 	//////////////////////////////////////////////////////////
 	socket.on('avancerAuto', function () {
+		
 		console.log('OK avance AUTO');
 		client.front(0.01);
 	});
@@ -231,43 +323,67 @@ io.on('connection', function(socket){
 	/*MESSAGES MANETTE*/
 
 	//////////////////////////////////////////////////////////
-	socket.on('avancerManette', function () {
-		console.log('OK avance');
-		client.front(0.2);
+	socket.on('avancerManette', function () {	
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK avance' + activeStabi);
+		client.front(0.1);
 	});
 	
 	socket.on('reculerManette', function () {
-		console.log('OK recule');
-		client.back(0.3);
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK recule' + activeStabi);
+		client.back(0.1);
 	});
 	
 	socket.on('monterManette', function () {
-		console.log('OK monter');
-		client.up(0.5);
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK monter' + activeStabi);
+		client.up(0.7);
 	});
 		
 	socket.on('descendreManette', function () {
-		console.log('OK descendre');
-		client.down(0.5);
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK descendre' + activeStabi);
+		client.down(0.7);
 	});
 	
 	socket.on('tournerDManette', function () {
-		console.log('OK droite');
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK droite' + activeStabi);
 		client.clockwise(0.3);
 	});
 	
 	socket.on('tournerGManette', function () {
-		console.log('OK gauche');
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK gauche' + activeStabi);
 		client.counterClockwise(0.3);
 	});
 	
 	socket.on('inclinerDManette', function () {
-		console.log('OK incline droite');
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK incline droite' + activeStabi);
 		client.right(0.2);
 	});
 	
 	socket.on('inclinerGManette', function () {
-		console.log('OK incline gauche');
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		console.log('OK incline gauche' + activeStabi);
 		client.left(0.4);
 	});
 	
@@ -282,46 +398,7 @@ io.on('connection', function(socket){
   
 		
 	
-		client.on('navdata', function(data) {
-			if (!data.demo) return;
-			var altitude=data.demo.altitude;	
-			var pitch = data.demo.rotation.pitch;
-			var roll  = data.demo.rotation.roll;
-			var yaw   = data.demo.rotation.yaw;
-			var vx    = data.demo.velocity.x;
-			var vy    = data.demo.velocity.y;
-			var vz    = data.demo.velocity.z;
-			var FlyState = data.demo.flyState;
-			
-			var motorProblem = data.droneState.motorProblem;
-			var communicationLost = data.droneState.communicationLost;
-			var softwareFault = data.droneState.softwareFault;
-			var lowBattery = data.droneState.lowBattery;
-			var MagnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
-			var tooMuchWind = data.droneState.tooMuchWind;
-			var ultrasonicSensorDeaf = data.droneState.ultrasonicSensorDeaf;
-			
-			//console.log(MagnometerNeedsCalibration)
-			
-			socket.emit('event', { name: 'altitude',value: altitude});
-			socket.emit('event', { name: 'pitch',value: pitch});
-			socket.emit('event', { name: 'roll',value: roll});
-			socket.emit('event', { name: 'yaw',value: yaw});
-			socket.emit('event', { name: 'vx',value: vx});
-			socket.emit('event', { name: 'vy',value: vy});
-			socket.emit('event', { name: 'vz',value: vz});
-			socket.emit('event', { name: 'flyState',value: FlyState});
-			
-			socket.emit('event', { name: 'motorProblem',value: motorProblem});
-			socket.emit('event', { name: 'communicationLost',value: communicationLost});
-			socket.emit('event', { name: 'softwareFault',value: softwareFault});
-			socket.emit('event', { name: 'lowBattery',value: lowBattery});
-			socket.emit('event', { name: 'MagnometerNeedsCalibration',value: MagnometerNeedsCalibration});
-			socket.emit('event', { name: 'tooMuchWind',value: tooMuchWind});
-			socket.emit('event', { name: 'ultrasonicSensorDeaf',value: ultrasonicSensorDeaf});
-
-		});
-
+	
 
 });
 
