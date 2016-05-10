@@ -1,0 +1,1 @@
+var gamepads = navigator.getGamepads();

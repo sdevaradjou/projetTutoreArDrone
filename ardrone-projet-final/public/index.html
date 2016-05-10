@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html>
+<script src="tracking-min.js"></script>
+<head>
+    <title>Node JS Copter Demo</title>
+    <script src="nodecopter-client.js"></script>
+    <script src="jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+	<meta name="viewport" content="width=device-width, minimum-scale=0.1">
+	<!--<script src="serverM.js"></script> -->
+	<script src="server.js"></script>
+	
+	
+    <script>
+		$(function () {
+
+			function valeurBatterie() {
+				socket.on('event', function (data) {
+					if(data.name=="battery"){
+						$("#battery-indicator").css('width',data.value+'%');
+						$("#battery-value").html(data.value+'%');
+					}
+				}); 
+			}
+			
+			
+			function CommandeActive(){
+					socket.on('manetteactive', function (data) {
+						if(data.name=="incgmanette"){
+							$('#incg').css('background-color', '#009900');
+						}
+						if(data.name=="incdmanette"){
+							$('#incd').css('background-color', '#009900');
+						}
+						if(data.name=="montermanette"){
+							$('#monter').css('background-color', '#009900');
+						}
+						if(data.name=="descendremanette"){
+							$('#descendre').css('background-color', '#009900');
+						}
+						if(data.name=="stabiliser"){
+							$('#stabiliser').css('background-color', '#009900');
+						}
+						if(data.name=="tourngmanette"){
+							$('#tourng').css('background-color', '#009900');
+						}
+						if(data.name=="tourndmanette"){
+							$('#tournd').css('background-color', '#009900');
+						}
+						if(data.name=="avancermanette"){
+							$('#avancer').css('background-color', '#009900');
+						}
+						if(data.name=="reculermanette"){
+							$('#reculer').css('background-color', '#009900');
+						}
+						if(data.name=="calibrer"){
+							$('#calibrer').css('background-color', '#009900');
+						}
+						if(data.name=="decoller"){
+							$('#decoller').css('background-color', '#009900');
+						}
+						if(data.name=="atterrir"){
+							$('#atterrir').css('background-color', '#009900');
+						}
+					}); 
+				}
+				
+				function CommandeInactive(){
+					socket.on('manettenull', function (data) {
+						if(data.name=="incgmanette"){
+							$('#incg').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="incdmanette"){
+							$('#incd').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="montermanette"){
+							$('#monter').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="descendremanette"){
+							$('#descendre').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="stabiliser"){
+							$('#stabiliser').css('background-color', '#e7e7e7');
+						}
+							if(data.name=="avancermanette"){
+							$('#avancer').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="reculermanette"){
+							$('#reculer').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="tourngmanette"){
+							$('#tourng').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="tourndmanette"){
+							$('#tournd').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="calibrer"){
+							$('#calibrer').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="decoller"){
+							$('#decoller').css('background-color', '#e7e7e7');
+						}
+						if(data.name=="atterrir"){
+							$('#atterrir').css('background-color', '#e7e7e7');
+						}
+					}); 
+				}
+				
+				
+			function recupereNavdata(){
+			
+			var altitude;	
+			var pitch;
+			var roll;
+			var yaw; 
+			var vx;   
+			var vy;    
+			var vz;    
+			var flyState; 
+			
+			var motorProblem;
+			var communicationLost;
+			var softwareFault;
+			var lowBattery;
+			var MagnometerNeedsCalibration;
+			var tooMuchWind;
+			var ultrasonicSensorDeaf;
+			
+				socket.on('EnvoiNavdata', function (data) {
+					if(data.name=="altitude"){
+						 altitude=data.value;
+					}
+						
+					if(data.name=="pitch"){
+						pitch=data.value;
+					}
+					
+					if(data.name=="roll"){
+						roll=data.value;
+					}
+					
+					if(data.name=="yaw"){
+						yaw=data.value;
+					}
+					
+					if(data.name=="vx"){
+						vx=data.value;
+					}
+					
+					if(data.name=="vy"){
+						vy=data.value;
+					}
+					
+					if(data.name=="vz"){
+						vz=data.value;
+					}
+					
+					if(data.name=="flyState"){
+						flyState=data.value;
+					}
+					
+					if(data.name=="motorProblem"){
+						motorProblem=data.value;
+					}
+					
+					if(data.name=="communicationLost"){
+						communicationLost=data.value;
+					}
+					
+					if(data.name=="softwareFault"){
+						softwareFault=data.value;
+					}
+					
+					if(data.name=="lowBattery"){
+						lowBattery=data.value;
+					}
+					
+					if(data.name=="MagnometerNeedsCalibration"){
+						MagnometerNeedsCalibration=data.value;
+					}
+					
+					if(data.name=="tooMuchWind"){
+						tooMuchWind=data.value;
+					}
+					
+					if(data.name=="ultrasonicSensorDeaf"){
+						ultrasonicSensorDeaf=data.value;
+					}
+
+					document.getElementById("infos").value ="DONNEES DE VOL"
+															+ "\r\rAltitude: " + altitude 
+															+ "\rPitch: " + pitch 
+															+ "\rRoll: " + roll 
+															+ "\rYaw: " + yaw 
+															+ "\rX: " + vx 
+															+ "\rY: " + vy 
+															+ "\rZ: " + vz 
+															+ "\rEtat de vol: " + flyState
+															+ "\r\r\rPROBLEMES DETECTES"
+															+ "\r\rProbleme moteur: " + motorProblem 
+															+ "\rProbleme capteur: " + ultrasonicSensorDeaf 
+															+ "\rCommunication perdue: " + communicationLost 
+															+ "\rErreur logiciel: " + softwareFault 
+															+ "\rBatterie faible: " + lowBattery 
+															+ "\rA calibrer: " + MagnometerNeedsCalibration 
+															+ "\rVent fort: " + tooMuchWind 
+															
+					
+				}); 
+			}
+			
+			
+			
+			recupereNavdata();
+			valeurBatterie();
+			CommandeActive();
+			CommandeInactive();
+			})	
+			
+    </script>
+	
+    <style>
+	  .rect {
+			width: 80px;
+			height: 80px;
+			position: absolute;
+			left: -1000px;
+			top: -1000px;
+		  }
+	
+		td {
+			border-radius:3px;
+		}
+
+		table {
+			width:730px;
+		}
+
+		.button  {
+			color: black;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 0px 0px 0px 0px;
+			vertical-align: middle;
+			cursor: pointer;
+			background-color: #e7e7e7;
+			-webkit-tap-highlight-color: rgba(0,0,0,0);
+			-webkit-transform: translateZ(0);
+			transform: translateZ(0);
+			box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+			-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
+			-moz-osx-font-smoothing: grayscale;
+			overflow: hidden;
+			width: 243px;
+			padding: 10px 32px;
+			border : none;
+		}
+
+		.button:before {
+			content: "";
+			position: absolute;
+			z-index: -1;
+			left: 50%;
+			right: 50%;
+			bottom: 0;
+			background: #34A7C1;
+			height: 4px;
+			-webkit-transition-property: left, right;
+			transition-property: left, right;
+			-webkit-transition-duration: 0.3s;
+			transition-duration: 0.3s;
+			-webkit-transition-timing-function: ease-out;
+			transition-timing-function: ease-out;
+		}
+		
+		.button:hover:before, .button:focus:before, .button:active:before {
+			left: 0;
+			right: 0;
+		}
+
+		h2{
+			display:inline;
+			text-align:center;
+			margin-left:15px;
+		}
+
+		textarea{
+			resize: none;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			font-size: 18px;
+		}
+
+		#battery{
+			border:1px solid black;
+			width:1000px;
+			height:20px;
+			text-align: center;
+		}
+		
+		.bar {
+			margin: 10px 0px 0px;
+			border: 2px solid #333;
+			background: #333;
+			overflow: hidden;
+			border-radius: 8px;
+			-moz-border-radius: 50px;
+			-webkit-border-radius: 50px;
+			-moz-box-shadow: 1px 1px 1px #777;
+			-webkit-box-shadow: 1px 1px 1px #777;
+			width: 695px;
+			display: inline-block;
+			margin-left: 342px;
+			background-color: lightgrey;
+		}
+		
+		.bar > span {
+			display: block;
+			height: 15px;
+			border-radius: 5px;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+		}
+		
+		.color0 > span {
+		background-color: #34A7C1;
+		}
+
+		#img{
+		   margin-left: 380px;
+			margin-top: 85px;
+		}
+
+		#boutons{
+		height:225px;
+		}
+
+		#placeholder{
+		width: 640px;
+		height: 360px;
+		}
+
+		#TDbatterie{
+			display:inline-block;
+			width:440px;
+		}
+
+		#batt{
+			display: inline;
+			margin-left: 673px;
+		}
+
+		#TRcamera{
+			display:table-cell;
+		}
+		
+		.bouton2{
+			padding: 0px;
+			border: none;
+			position: fixed;
+			top: 10px;
+			border: 2px solid #34A7C1;
+		}
+
+		#TRinfo{
+			display:table-caption;
+		}
+
+		#Affichagedistance{
+			position: fixed;
+			top: 305px;
+			left: 511px;
+		}
+		
+		#infos{
+			position: fixed;
+			left: 1415px;
+			top: 70px;
+			height: 670px;
+			width: 276px;
+		}
+		
+		#titre{
+			background-color: lightgrey;
+			height: 50px;
+			width: 1692px;
+		}
+		
+		.TRboutons{
+			display: inline-flex;
+			margin-left: 320px;
+			background-color: #34A7C1;
+		}
+
+		.TRboutons2{
+			display: inline-flex;
+			margin-left: 73px;
+			background-color: #34A7C1;
+		}
+
+		placeholder, canvas {
+			position: absolute;
+		}
+		
+		#separateurh{
+			background-color: lightgrey;
+			height: 2px;
+			position: fixed;
+			top: 300px;
+			width: 1395px;
+		}
+		
+		#separateurv{
+			position: fixed;
+			left: 1400px;
+			height: 694px;
+			width: 3px;
+			background-color: lightgray;
+			top: 55px;
+		}
+		
+		.onoffswitch {
+			position: fixed;
+			width: 140px;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			top: 16px;
+			left: 630px;
+		}
+		
+		.onoffswitch-checkbox {
+			display: none;
+		}
+
+		.onoffswitch-label {
+			display: block; overflow: hidden; cursor: pointer;
+			border: 2px solid #999999; border-radius: 20px;
+		}
+
+		.onoffswitch-inner {
+			display: block; width: 200%; margin-left: -100%;
+			transition: margin 0.3s ease-in 0s;
+		}
+
+		.onoffswitch-inner:before, .onoffswitch-inner:after {
+			display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+			font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+			box-sizing: border-box;
+		}
+
+		.onoffswitch-inner:before {
+			content: "Vol autonome";
+			padding-left: 10px;
+			background-color: #34A7C1; color: #FFFFFF;
+		}
+
+		.onoffswitch-inner:after {
+			content: "Vol manuel";
+			padding-right: 10px;
+			background-color: #EEEEEE; color: #999999;
+			text-align: right;
+		}
+
+		.onoffswitch-switch {
+			display: block; width: 18px; margin: 6px;
+			background: #FFFFFF;
+			position: absolute; top: 0; bottom: 0;
+			right: 105px;
+			border: 2px solid #999999; border-radius: 20px;
+			transition: all 0.3s ease-in 0s; 
+		}
+
+		.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+			margin-left: 0;
+		}
+
+		.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+			right: 0px; 
+		}
+		
+		
+     </style>
+</head>
+
+<body onkeydown="
+	switch(event.keyCode) {
+		case 16: //shift droit
+			decollage();
+			break;
+
+		case 96: //zero pav num
+			atterrir();
+			break;
+
+		case 32: //espace
+			stabiliser();
+			break;
+
+		case 38: //touche avant
+			avancer();
+			break;
+
+		case 40: //touche arriere
+			reculer();
+			break;
+
+		case 39: //touche droite
+			tournerDroite();
+			break;
+
+		case 37: //touche gauche
+			tournerGauche();
+			break;
+
+		case 90: //touche Z
+			monter();
+			break;
+
+		case 88: //touche X
+			descendre();
+			break;
+
+		case 81: //touche Q
+			inclinerGauche();
+			break;
+			
+		case 68: //touche D
+			inclinerDroite();
+			break;
+			
+		case 67: //touche C
+			calibrer();
+			break;
+		
+		default:
+		$('#decoller').css('background-color', '#e7e7e7');
+		$('#atterrir').css('background-color', '#e7e7e7');
+		$('#monter').css('background-color', '#e7e7e7');
+		$('#descendre').css('background-color', '#e7e7e7');
+		$('#incd').css('background-color', '#e7e7e7');
+		$('#incg').css('background-color', '#e7e7e7');
+		$('#tournd').css('background-color', '#e7e7e7');
+		$('#tourng').css('background-color', '#e7e7e7');
+		$('#calibrer').css('background-color', '#e7e7e7');
+		$('#avancer').css('background-color', '#e7e7e7');
+		$('#reculer').css('background-color', '#e7e7e7');
+		$('#stabiliser').css('background-color', '#e7e7e7');
+			stabiliser();
+}"
+
+ class="test">
+
+<div id="titre">
+<div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+    <label class="onoffswitch-label" for="myonoffswitch">
+        <span class="onoffswitch-inner"></span>
+        <span class="onoffswitch-switch"></span>
+    </label>
+</div>
+</div>
+	<div id="divbouton"><table>
+		<tr>
+			<td id="boutons">
+				<table>
+					<tr class="TRboutons">
+					
+						<td class="bouton"><button id="decoller" class="button" onclick="decollage()">Decoller [Maj.D]</button></td>
+						<td class="bouton"><button id="avancer" class="button" onclick="avancer()">Avancer [Fle.H]</button></td>	
+						<td class="bouton"><button id="monter" class="button" onclick="monter()">Monter [Z]</button></td>
+					</tr>
+					
+					<tr class="TRboutons2">
+						<td class="bouton"><button id="incg" class="button" onclick="inclinerGauche()">Incliner gauche [Q]</button></td>
+						<td class="bouton"><button id="tourng" class="button" onclick="tournerGauche()">Tourner gauche [Fle.G]</button></td>
+						<td class="bouton"><button id="stabiliser" class="button" onclick="stabiliser()">Stabiliser [Esp]</button></td>				
+						<td class="bouton"><button id="tournd" class="button" onclick="tournerDroite()">Tourner droite [Fle.D]</button></td>
+						<td class="bouton"><button id="incd" class="button" onclick="inclinerDroite()">Incliner droite [D]</button></td>
+					</tr>
+						
+					<tr class="TRboutons">
+						<td class="bouton"><button id="atterrir" class="button" onclick="atterrir()">Atterrir [Pav.0]</button></td>
+						<td class="bouton"><button id="reculer" class="button" onclick="reculer()">Reculer [Fle.B]</button></td>
+						<td class="bouton"><button id="descendre" class="button" onclick="descendre()">Descendre [X]</button></td>
+						<td class="bouton2"><button id="calibrer" class="button" onclick="calibrer()">Calibrer [C]</button></td>
+					</tr>
+				</table>
+				
+				<div class="bar color0">
+					<span id="battery-indicator" style="width:50%"></span>
+				</div>
+			
+				<h3 id="batt"><span id="battery-value"></span></h3>
+			</td>
+			
+		</tr>
+	  
+
+	</table>
+	</div>
+	<div id="separateurh"></div>
+		<tr id="TRcamera">
+			<img id="img">
+			<h1 id="Affichagedistance"></h1>
+		</tr>	
+	<div id="separateurv"></div>
+	<div><textarea id="infos"></textarea></div>
+
+	<script>
+	
+	var compteur = 0;
+	var AnimBoucle=0;
+			function chargeImages(){
+				setTimeout(chargeImages, 50);
+				document.getElementById('img').src = "frame.png"+"?a="+Math.random(1); // On charge l'image
+			}
+
+
+			function detect(){
+				AnimBoucle=0;
+				var trouve = 0;
+				
+				var inputElements = document.getElementById('myonoffswitch');
+				if(inputElements.checked){
+			  
+				var img = document.getElementById('img');
+				var demoContainer = document.querySelector('.test');
+					
+				tracking.ColorTracker.registerColor('green', function(r, g, b) { //ajout de nouvelles couleurs
+					if (r < 50 && g > 200 && b < 50) {
+						return true;
+					}
+					return false;
+				});
+
+				var tracker = new tracking.ColorTracker(['yellow']); //detection de la couleur jaune
+
+				var elements = document.getElementsByClassName('rect'); //recuperation du rectangle affiche
+					
+				while(elements.length > 0){ //tant que le rectangle courant est affiche on efface les rectangles precedents
+					elements[0].parentNode.removeChild(elements[0]);
+				}	
+
+				trouve = 0;
+				tracker.on('track', function(event) { //evenement de la detection
+				
+			
+					event.data.forEach(function(rect) { //pour chaque rectangle, on recupere ses coordonnees et on calcule une zone centree par rapport a la video,
+														//il faut que le rectangle se trouve a peu pres dans cette zone, pour cela il suffit de faire bouger le drone automatiquement 
+														//jusqu'a ce qu'on arrive a la bonne position du rectangle
+						trouve = 1;
+						compteur = 0;
+						
+						window.plot(rect.x, rect.y, rect.width, rect.height, rect.color);
+								
+
+						var pixtometre = (rect.width * 0.000264583);
+						var distanceCible = (0.0393699984 / pixtometre);
+						var arrondi=Math.round(distanceCible*100)/100;
+						
+						if(arrondi >= 1.0){
+							$("#Affichagedistance").html('Distance de la cible: ' + arrondi +' m');
+						}else{
+							$("#Affichagedistance").html('Distance de la cible: ' + arrondi * 100 +' cm');
+						}
+						
+						
+						
+						var espaceLibreV;
+						var espaceLibreH;
+						var centreV;
+						var centreH;
+						var essai;
+						var derniermouv;
+						
+						if(arrondi > 1.6){
+							AnimBoucle = 0;
+							espaceLibreV = 360 -rect.height;
+							espaceLibreH = 640 -rect.width;
+							centreV = espaceLibreV / 2;
+							centreH = espaceLibreH / 2;
+							essai=0;
+							derniermouv="";
+								
+								
+							if(rect.y<centreV-20){
+								monterAuto();
+								if(rect.y<centreV-20){
+									essai=1;
+								}
+							}
+							if(rect.y>centreV+20 ){
+								descendreAuto();
+								if(rect.y>centreV+20 ){
+								essai=1;
+								}
+							}
+							
+							if(rect.x<centreH-20){
+								inclinerGaucheAuto();
+								derniermouv="incgauche"
+								if(rect.x<centreH-20){
+									essai=1;
+								}
+							}
+							if(rect.x>centreH+20){
+								inclinerDroiteAuto();
+								derniermouv="incdroite"
+								if(rect.x>centreH+20){
+								essai=1;
+							}
+							}
+							
+							//if(essai==0){
+								avancerAuto();
+							//}
+						
+						}else{
+							AnimBoucle = AnimBoucle + 1;
+							if(AnimBoucle==1){
+								atterrir();
+								//stabiliser();
+								//animation();
+							}
+							
+						}
+						
+					});
+				});
+				
+				if(trouve==0){
+								
+					compteur =  compteur + 1;
+					
+					if(compteur>=4 && compteur<20){
+						if (derniermouv="incgauche"){
+						
+						}
+						if (derniermouv="incdroite"){
+						
+						}
+					}
+					
+					if(compteur==4){
+						$("#Affichagedistance").html('');
+						stabiliser();
+					}
+				}
+
+				tracking.track('#img', tracker);
+
+				window.plot = function(x, y, w, h, color) {
+					var rect = document.createElement('div');
+					document.querySelector('.test').appendChild(rect);
+					rect.classList.add('rect');
+					rect.style.border = '4px solid ' + color;
+					rect.style.width = w + 'px';
+					rect.style.height = h + 'px';
+					rect.style.left = (img.offsetLeft + x) + 'px';
+					rect.style.top = (img.offsetTop + y) + 'px';
+				};
+				
+			}else{
+				$("#Affichagedistance").html('');
+				var elements = document.getElementsByClassName('rect');
+				while(elements.length > 0){
+					elements[0].parentNode.removeChild(elements[0]);
+				}
+			}
+				setTimeout(detect, 100);	
+			}
+			
+			chargeImages();
+			
+			
+			socket.on('event', function (data) {
+				if(data.name=="decollagefini"){
+					detect();
+				}
+			});
+				
+			
+			
+		</script>
+	
+</body>
+</html>
