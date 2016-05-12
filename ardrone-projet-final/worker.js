@@ -42,35 +42,37 @@ onmessage=function(event){
 recupYaw=yaw;
 recupAltitude=altitude;
 
-while(1){
+	while(true){
 		
-			
 			while(yaw > recupYaw + 2.0){
 				client.counterClockwise(0.1);
 			}
+			
 			while(yaw < recupYaw - 2.0){
 				client.clockwise(0.1);
 			}
 			
-			while(pitch < -2.0){
-				client.back(0.1);
-			}
-			while(pitch > 2.0){
-				client.front(0.1);
-			}
-			
-			while(roll < -2.7){
+			while(roll < -2.0){
 				client.right(0.1);
 			}
-			while(roll > 0.4){
+			
+			while(roll > 2.0){
 				client.left(0.1);
 			}
 			
-			while(altitude > recupAltitude + 0.05){
-				client.down(0.1);
-			}
-			while(altitude < recupAltitude - 0.20){
-				client.up(0.05);
+			while(pitch < -2.0){
+				client.back(0.05);
 			}
 			
-}
+			while(pitch > 2.0){
+				client.front(0.05);
+			}
+			
+			// while(altitude > recupAltitude + 0.05){
+				// client.down(0.06);
+			// }
+			
+			// while(altitude < recupAltitude - 0.05){
+				// client.up(0.06);
+			// }			
+	}

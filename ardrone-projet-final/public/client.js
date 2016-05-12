@@ -13,7 +13,6 @@ var A = 0;
 
 function decollage() {
 	socket.emit('decoller'); 
-	//socket.emit('stabiliser'); 
 }
 
 function atterrir() {
@@ -38,7 +37,6 @@ function tournerDroite() {
 
 function tournerGauche() {
 	socket.emit('tournerG'); 
-	//socket.emit('stabiliser'); 
 }
 
 function monter() {
@@ -107,6 +105,10 @@ function animation() {
 
 //////////////////////////////////////
 
+function stabiliserManette() {
+	socket.emit('stabiliserManette');
+}
+
 function avancerManette() {
 	socket.emit('avancerManette'); 
 }
@@ -154,10 +156,10 @@ function inclinerDroiteManette() {
 	joystickXv = 0,
 	joystickYh = 0,
 	joystickYv = 0,
-
+	manette = false,
 	
     gameloop = function(){
-	
+		manette=false;
 		gamepad = navigator.getGamepads()[0];
 		if(gamepad){
 		  
@@ -168,50 +170,58 @@ function inclinerDroiteManette() {
 			
 			//JOYSTICK GAUCHE
 			//joy à droite -> incline droite
-			if(joystickXh>0.7){
+			if(joystickXh>0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				inclinerDroiteManette();
 				console.log("droite");
+				
 			}else{
 				socket.emit('manettevide', { name: 'incdmanette'});
 			}
 			
 			
 			//joy a gauche -> incline gauche
-			if(joystickXh<-0.7){
+			if(joystickXh<-0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				inclinerGaucheManette();
 				console.log("gauche");
+				
 			}else{
 				socket.emit('manettevide', { name: 'incgmanette'});
 			}
 			
 			//joy en haut -> avance
-			if(joystickXv<-0.7){
+			if(joystickXv<-0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				avancerManette();
 				console.log("avant");
+				
 			}else{
 				socket.emit('manettevide', { name: 'avancermanette'});
 			}
 			
 			//joy en bas -> recule
-			if(joystickXv>0.7){
+			if(joystickXv>0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				reculerManette();
 				console.log("arriere");
+				
 			}else{
 				socket.emit('manettevide', { name: 'reculermanette'});
 			}
@@ -219,11 +229,12 @@ function inclinerDroiteManette() {
 			
 			//JOYSTICK DROIT
 			//joy à droite -> tourner droite
-			if(joystickYh>0.7){
+			if(joystickYh>0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				tournerDroiteManette();
 				console.log("droite");
 			}else{
@@ -231,11 +242,12 @@ function inclinerDroiteManette() {
 			}
 			
 			//joy a gauche -> tourner gauche
-			if(joystickYh<-0.7){
+			if(joystickYh<-0.9){
 				X= 0;
 				Y= 0;
 				B= 0;
 				A = 0;
+				manette=true;
 				tournerGaucheManette();
 				console.log("gauche");
 			}else{
@@ -250,6 +262,7 @@ function inclinerDroiteManette() {
 				Y= 0;
 				B= 0;
 				A = A+1;
+				manette=true;
 				if(A == 1){
 					decollage();
 					
@@ -264,6 +277,7 @@ function inclinerDroiteManette() {
 				X= 0;
 				Y= 0;
 				B = B+1;
+				manette=true;
 				if(B == 1){
 					atterrir();
 				}
@@ -277,11 +291,12 @@ function inclinerDroiteManette() {
 				B= 0;
 				Y= 0;
 				X = X+1;
+				manette=true;
 				if(X == 1){
-					stabiliser();
+					stabiliserManette();
 				}
 			}else{
-				socket.emit('manettevide', { name: 'stabiliser'});
+				socket.emit('manettevide', { name: 'stabiliserManette'});
 				}
 			
 			//Y
@@ -290,6 +305,7 @@ function inclinerDroiteManette() {
 				X= 0;
 				B= 0;
 				Y = Y+1;
+				manette=true;
 				if(Y == 1){
 					calibrer();
 				}
@@ -304,7 +320,8 @@ function inclinerDroiteManette() {
 				Y= 0;
 				B= 0;
 				A = 0;
-					monterManette();
+				manette=true;
+				monterManette();
 			}else{
 				socket.emit('manettevide', { name: 'montermanette'});
 			}
@@ -315,10 +332,16 @@ function inclinerDroiteManette() {
 				Y= 0;
 				B= 0;
 				A = 0;
-					descendreManette();
+				manette=true;
+				descendreManette();
 			}else{
 				socket.emit('manettevide', { name: 'descendremanette'});
 			}
+		
+			if(manette==false){
+				stabiliserManette();
+			}
+			
 		}
 		window.requestAnimationFrame(gameloop);
     };

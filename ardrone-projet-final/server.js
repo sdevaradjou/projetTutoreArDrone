@@ -8,14 +8,12 @@ var Worker = require("tiny-worker");
 var worker;
 
 var arDrone = require('ar-drone');
-
 var client = arDrone.createClient();
 
 require('ar-drone-png-stream')(client, { port: 3001 });
 	
 var fs = require('fs');
 var pngStream = client.getPngStream();
-var frameCounter = 0;
 var period = 90; // Save a frame every 5000 ms.
 var lastFrameTime = 0;
 
@@ -24,7 +22,6 @@ pngStream
   .on('data', function(pngBuffer) {
     var now = (new Date()).getTime();
     if (now - lastFrameTime > period) {
-      frameCounter++;
       lastFrameTime = now;
       fs.writeFile('D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-projet-final\\public'+'\\frame' + '.png', pngBuffer, function(err) {
         if (err) {
@@ -63,19 +60,21 @@ io.on('connection', function(socket){
 	var pitch;
 	var roll;
 	var yaw;
-	var vx;
-	var vy;
-	var vz;
+	//var vx;
+	//var vy;
+	//var vz;
 	var FlyState;
 	
-	
-	var motorProblem;
-	var communicationLost;
-	var softwareFault;
+	//var motorProblem;
+	//var communicationLost;
+	//var softwareFault;
 	var lowBattery;
-	var MagnometerNeedsCalibration;
-	var tooMuchWind;
-	var ultrasonicSensorDeaf;
+	//var MagnometerNeedsCalibration;
+	//var tooMuchWind;
+	//var ultrasonicSensorDeaf;
+
+	var ActualisationNavdata = 5000; // Save a frame every 5000 ms.
+	var DerniereActualisation = 0;
 
 	//////////////////////////////////////////////////////////
 	client.on('navdata', function(data) {
@@ -84,38 +83,43 @@ io.on('connection', function(socket){
 		pitch = data.demo.rotation.pitch;
 		roll  = data.demo.rotation.roll;
 		yaw   = data.demo.rotation.yaw;
-		vx    = data.demo.velocity.x;
-		vy    = data.demo.velocity.y;
-		vz    = data.demo.velocity.z;
+		//vx    = data.demo.velocity.x;
+		//vy    = data.demo.velocity.y;
+		//vz    = data.demo.velocity.z;
 		FlyState = data.demo.flyState;
 		
-		motorProblem = data.droneState.motorProblem;
-		communicationLost = data.droneState.communicationLost;
-		softwareFault = data.droneState.softwareFault;
+		//motorProblem = data.droneState.motorProblem;
+		//communicationLost = data.droneState.communicationLost;
+		//softwareFault = data.droneState.softwareFault;
 		lowBattery = data.droneState.lowBattery;
-		MagnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
-		tooMuchWind = data.droneState.tooMuchWind;
-		ultrasonicSensorDeaf = data.droneState.ultrasonicSensorDeaf;
+		//MagnometerNeedsCalibration = data.droneState.MagnometerNeedsCalibration;
+		//tooMuchWind = data.droneState.tooMuchWind;
+		//ultrasonicSensorDeaf = data.droneState.ultrasonicSensorDeaf;
 		
-
 		
 		socket.emit('EnvoiNavdata', { name: 'altitude',value: altitude});
 		socket.emit('EnvoiNavdata', { name: 'pitch',value: pitch});
 		socket.emit('EnvoiNavdata', { name: 'roll',value: roll});
 		socket.emit('EnvoiNavdata', { name: 'yaw',value: yaw});
-		socket.emit('EnvoiNavdata', { name: 'vx',value: vx});
+		/*socket.emit('EnvoiNavdata', { name: 'vx',value: vx});
 		socket.emit('EnvoiNavdata', { name: 'vy',value: vy});
-		socket.emit('EnvoiNavdata', { name: 'vz',value: vz});
+		socket.emit('EnvoiNavdata', { name: 'vz',value: vz});*/
 		socket.emit('EnvoiNavdata', { name: 'flyState',value: FlyState});
 		
-		socket.emit('EnvoiNavdata', { name: 'motorProblem',value: motorProblem});
-		socket.emit('EnvoiNavdata', { name: 'communicationLost',value: communicationLost});
-		socket.emit('EnvoiNavdata', { name: 'softwareFault',value: softwareFault});
-		socket.emit('EnvoiNavdata', { name: 'lowBattery',value: lowBattery});
-		socket.emit('EnvoiNavdata', { name: 'MagnometerNeedsCalibration',value: MagnometerNeedsCalibration});
-		socket.emit('EnvoiNavdata', { name: 'tooMuchWind',value: tooMuchWind});
-		socket.emit('EnvoiNavdata', { name: 'ultrasonicSensorDeaf',value: ultrasonicSensorDeaf});
-
+		
+		
+		   var now = (new Date()).getTime();
+			if (now - DerniereActualisation > ActualisationNavdata) {
+				DerniereActualisation = now;
+				/*socket.emit('EnvoiNavdata', { name: 'motorProblem',value: motorProblem});
+				socket.emit('EnvoiNavdata', { name: 'communicationLost',value: communicationLost});
+				socket.emit('EnvoiNavdata', { name: 'softwareFault',value: softwareFault});*/
+				socket.emit('EnvoiNavdata', { name: 'lowBattery',value: lowBattery});
+				/*socket.emit('EnvoiNavdata', { name: 'MagnometerNeedsCalibration',value: MagnometerNeedsCalibration});
+				socket.emit('EnvoiNavdata', { name: 'tooMuchWind',value: tooMuchWind});
+				socket.emit('EnvoiNavdata', { name: 'ultrasonicSensorDeaf',value: ultrasonicSensorDeaf});*/
+			}
+    
 	});
 	//////////////////////////////////////////////////////////
   
@@ -130,46 +134,61 @@ io.on('connection', function(socket){
 	socket.on('decoller', function () {
 		console.log('OK Je vais decoller');
 		socket.emit('manetteactive', { name: 'decoller'});
-		client.takeoff();
 		
-		client.after(150, function() {
-			if(worker!=undefined){
+		//Initialisation capteurs
+		client.ftrim();
+		
+		client.after(2000, function() {
+			client.takeoff();
+		});
+		
+		
+		client.after(5000, function() {
+			/*if(worker!=undefined){
 				worker.postMessage({ name: 'cmd',value: 1});
 			}
-			worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-PTuto-web-navigation\\worker.js");
+			worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-projet-final\\worker.js");
 			worker.postMessage({ name: 'yaw',value: yaw});
 			worker.postMessage({ name: 'roll',value: roll});
 			worker.postMessage({ name: 'pitch',value: pitch});
-			worker.postMessage({ name: 'altitude',value: altitude});
+			worker.postMessage({ name: 'altitude',value: altitude});*/
 			console.log('OK Stabilise avec thread');
+			
+			client.stop();
 		});
 		
-		client.after(6000, function() {
-			socket.emit('event', { name: "decollagefini",value: 0});
-		});
-		
+		socket.emit('event', { name: "decollagefini",value: 0});
 		
 	});
 	
 	socket.on('atterrir', function () {
 		
-		socket.emit('manetteactive', { name: 'atterrir'});
-		console.log('OK Je vais atterir');
-		client.land();
-		socket.emit('event', { name: "decollagefini",value: 1});
-	});
-  
-	socket.on('stabiliser', function () {
-		socket.emit('manetteactive', { name: 'stabiliser'});
 		if(worker!=undefined){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
-		worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-PTuto-web-navigation\\worker.js");
+		
+		socket.emit('manetteactive', { name: 'atterrir'});
+		console.log('OK Je vais atterir');
+		client.land();
+		
+		
+	});
+  
+	socket.on('stabiliser', function () {
+		// client.stop();
+		// socket.emit('manetteactive', { name: 'stabiliser'});
+		if(worker!=undefined){
+			worker.postMessage({ name: 'cmd',value: 1});
+		}
+		
+		worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-projet-final\\worker.js");
 		worker.postMessage({ name: 'altitude',value: altitude});
 		worker.postMessage({ name: 'yaw',value: yaw});
 		worker.postMessage({ name: 'roll',value: roll});
 		worker.postMessage({ name: 'pitch',value: pitch});
 		console.log('OK Stabilise avec thread');
+		
+		
 	});
 	
 	socket.on('avancer', function () {
@@ -201,14 +220,14 @@ io.on('connection', function(socket){
 	});
 	
 	socket.on('tournerD', function () {
-		client.clockwise(0.3);
+		client.clockwise(1);
 		client.after(250, function() {
 			client.stop();
 		});
 	});
 	
 	socket.on('tournerG', function () {
-		client.counterClockwise(0.3);
+		client.counterClockwise(1);
 		client.after(250, function() {
 			client.stop();
 		});
@@ -251,7 +270,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		console.log('OK Monter AUTO');		
-		client.up(0.1);
+		client.up(0.15);
 	});
 		
 	socket.on('descendreAuto', function () {
@@ -259,7 +278,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		console.log('OK Descendre AUTO');		
-		client.down(0.1);	
+		client.down(0.2);	
 	});
 	
 	socket.on('inclinerGAuto', function () {
@@ -267,7 +286,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		console.log('OK InclinerG AUTO');		
-		client.left(0.2);	
+		client.left(0.08);	
 	});
 	
 	socket.on('inclinerDAuto', function () {
@@ -275,7 +294,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		console.log('OK InclinerD AUTO');		
-		client.right(0.005);	
+		client.right(0.06);	
 	});
 	
 	/*socket.on('tournerGAuto', function () {
@@ -299,15 +318,41 @@ io.on('connection', function(socket){
 	});*/
 	
 	socket.on('animation', function () {
-		socket.emit('manetteactive', { name: 'stabiliser'});
-		if(worker!=undefined){
-			worker.postMessage({ name: 'cmd',value: 1});
-		}
-		worker=new Worker("D:\\ARDRONE2\\progs\\projetTutoreArDrone\\ardrone-PTuto-web-navigation\\worker.js");
-		worker.postMessage({ name: 'yaw',value: yaw});
-		worker.postMessage({ name: 'roll',value: roll});
-		worker.postMessage({ name: 'pitch',value: pitch});
-		console.log('OK Stabilise avec thread');
+		//console.log('ANIMATION');
+		//var recupYaw=yaw;
+		//client.clockwise(1);
+		//client.after(1500, function() {
+			//client.stop();
+		//});
+		// if(recupYaw > 0){
+		
+			// var yawsup= setInterval(function(){
+				// console.log('recup yaw: '+ recupYaw);
+				// if(yaw <= (recupYaw - 180)){
+					// client.stop();
+					// clearInterval(yawsup);
+				// }
+				
+			// },500);
+
+		// }else{
+			
+			// var yawinf= setInterval(function(){
+				// console.log('recup yaw: '+ recupYaw);
+				// if(yaw >= (recupYaw + 180)){
+					// client.stop();
+					// clearInterval(yawinf);
+				// }
+				// client.counterClockwise(0.7);
+				// client.after(30, function() {
+					// client.stop();
+				// });
+			// },500);
+	
+		// }
+		
+		//client.stop();
+
 	});
 	
 	//////////////////////////////////////////////////////////
@@ -315,12 +360,17 @@ io.on('connection', function(socket){
 	/*MESSAGES MANETTE*/
 
 	//////////////////////////////////////////////////////////
+	socket.on('stabiliserManette', function () {
+		console.log('stabilise Manette')
+		client.stop();
+	});
+	
 	socket.on('avancerManette', function () {	
 		if(worker!=undefined){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'avancermanette'});
-		client.front(0.1);
+		client.front(0.4);
 	});
 	
 	socket.on('reculerManette', function () {
@@ -328,7 +378,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'reculermanette'});
-		client.back(0.1);
+		client.back(0.4);
 	});
 	
 	socket.on('monterManette', function () {
@@ -336,7 +386,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'montermanette'});
-		client.up(0.3);
+		client.up(1);
 	});
 		
 	socket.on('descendreManette', function () {
@@ -344,7 +394,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'descendremanette'});
-		client.down(0.7);
+		client.down(1);
 	});
 	
 	socket.on('tournerDManette', function () {
@@ -352,7 +402,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'tourndmanette'});
-		client.clockwise(0.3);
+		client.clockwise(1);
 	});
 	
 	socket.on('tournerGManette', function () {
@@ -360,7 +410,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'tourngmanette'});
-		client.counterClockwise(0.3);
+		client.counterClockwise(1);
 	});
 	
 	socket.on('inclinerDManette', function () {
@@ -368,7 +418,7 @@ io.on('connection', function(socket){
 			worker.postMessage({ name: 'cmd',value: 1});
 		}
 		socket.emit('manetteactive', { name: 'incdmanette'});
-		client.right(0.2);
+		client.right(0.4);
 	});
 	
 	socket.on('inclinerGManette', function () {

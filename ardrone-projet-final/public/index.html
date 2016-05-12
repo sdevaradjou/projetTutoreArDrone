@@ -115,18 +115,19 @@
 			var pitch;
 			var roll;
 			var yaw; 
-			var vx;   
-			var vy;    
-			var vz;    
+			//var vx;   
+			//var vy;    
+			//var vz;    
 			var flyState; 
 			
-			var motorProblem;
-			var communicationLost;
-			var softwareFault;
+			//var motorProblem;
+			//var communicationLost;
+			//var softwareFault;
 			var lowBattery;
-			var MagnometerNeedsCalibration;
-			var tooMuchWind;
-			var ultrasonicSensorDeaf;
+			//var MagnometerNeedsCalibration;
+			//var tooMuchWind;
+			//var ultrasonicSensorDeaf;
+		
 			
 				socket.on('EnvoiNavdata', function (data) {
 					if(data.name=="altitude"){
@@ -145,7 +146,7 @@
 						yaw=data.value;
 					}
 					
-					if(data.name=="vx"){
+					/*if(data.name=="vx"){
 						vx=data.value;
 					}
 					
@@ -155,13 +156,13 @@
 					
 					if(data.name=="vz"){
 						vz=data.value;
-					}
+					}*/
 					
 					if(data.name=="flyState"){
 						flyState=data.value;
 					}
 					
-					if(data.name=="motorProblem"){
+					/*if(data.name=="motorProblem"){
 						motorProblem=data.value;
 					}
 					
@@ -171,13 +172,13 @@
 					
 					if(data.name=="softwareFault"){
 						softwareFault=data.value;
-					}
+					}*/
 					
 					if(data.name=="lowBattery"){
 						lowBattery=data.value;
 					}
 					
-					if(data.name=="MagnometerNeedsCalibration"){
+					/*if(data.name=="MagnometerNeedsCalibration"){
 						MagnometerNeedsCalibration=data.value;
 					}
 					
@@ -187,26 +188,22 @@
 					
 					if(data.name=="ultrasonicSensorDeaf"){
 						ultrasonicSensorDeaf=data.value;
-					}
-
+					}*/
+					
 					document.getElementById("infos").value ="DONNEES DE VOL"
 															+ "\r\rAltitude: " + altitude 
 															+ "\rPitch: " + pitch 
 															+ "\rRoll: " + roll 
 															+ "\rYaw: " + yaw 
-															+ "\rX: " + vx 
-															+ "\rY: " + vy 
-															+ "\rZ: " + vz 
 															+ "\rEtat de vol: " + flyState
 															+ "\r\r\rPROBLEMES DETECTES"
-															+ "\r\rProbleme moteur: " + motorProblem 
-															+ "\rProbleme capteur: " + ultrasonicSensorDeaf 
-															+ "\rCommunication perdue: " + communicationLost 
-															+ "\rErreur logiciel: " + softwareFault 
+															+ "\r\rProbleme moteur: 0"
+															+ "\rProbleme capteur: 0"
+															+ "\rCommunication perdue: 0"
+															+ "\rErreur logiciel: 0" 
 															+ "\rBatterie faible: " + lowBattery 
-															+ "\rA calibrer: " + MagnometerNeedsCalibration 
-															+ "\rVent fort: " + tooMuchWind 
-															
+															+ "\rA calibrer: 0"
+															+ "\rVent fort: 0"
 					
 				}); 
 			}
@@ -617,28 +614,22 @@
 	
 	var compteur = 0;
 	var AnimBoucle=0;
-			function chargeImages(){
-				setTimeout(chargeImages, 50);
-				document.getElementById('img').src = "frame.png"+"?a="+Math.random(1); // On charge l'image
+	var boucle=0;
+	var ArretTimeout;
+	
+			function chargeImages(){				
+				setInterval(function(){
+					document.getElementById('img').src = "frame.png"+"?a="+Math.random(1); // On charge l'image
+				},50);
 			}
 
 
 			function detect(){
-				AnimBoucle=0;
+			
 				var trouve = 0;
-				
-				var inputElements = document.getElementById('myonoffswitch');
-				if(inputElements.checked){
 			  
 				var img = document.getElementById('img');
 				var demoContainer = document.querySelector('.test');
-					
-				tracking.ColorTracker.registerColor('green', function(r, g, b) { //ajout de nouvelles couleurs
-					if (r < 50 && g > 200 && b < 50) {
-						return true;
-					}
-					return false;
-				});
 
 				var tracker = new tracking.ColorTracker(['yellow']); //detection de la couleur jaune
 
@@ -649,6 +640,7 @@
 				}	
 
 				trouve = 0;
+				AnimBoucle = 0;
 				tracker.on('track', function(event) { //evenement de la detection
 				
 			
@@ -671,8 +663,7 @@
 							$("#Affichagedistance").html('Distance de la cible: ' + arrondi * 100 +' cm');
 						}
 						
-						
-						
+							
 						var espaceLibreV;
 						var espaceLibreH;
 						var centreV;
@@ -681,7 +672,7 @@
 						var derniermouv;
 						
 						if(arrondi > 1.6){
-							AnimBoucle = 0;
+							
 							espaceLibreV = 360 -rect.height;
 							espaceLibreH = 640 -rect.width;
 							centreV = espaceLibreV / 2;
@@ -699,7 +690,7 @@
 							if(rect.y>centreV+20 ){
 								descendreAuto();
 								if(rect.y>centreV+20 ){
-								essai=1;
+									essai=1;
 								}
 							}
 							
@@ -714,24 +705,36 @@
 								inclinerDroiteAuto();
 								derniermouv="incdroite"
 								if(rect.x>centreH+20){
-								essai=1;
-							}
+									essai=1;
+								}
 							}
 							
-							//if(essai==0){
-								avancerAuto();
-							//}
-						
-						}else{
+							if(essai==0){//quand le cadre est centre
+								//var stab = setInterval(function(){
+									//client.stop();
+								//},30);
+								stabiliserManette();
+								//clearInterval(stab);
+								//animation();
+								//atterrir();
+							}
+							
+							avancerAuto(); //on avance tout le temps
+							
+						}else{ //Quand le drone est proche
 							AnimBoucle = AnimBoucle + 1;
 							if(AnimBoucle==1){
-								atterrir();
-								//stabiliser();
+								clearTimeout(ArretTimeout); //Arreter boucle detect
+								$("#Affichagedistance").html('');
+								var elements = document.getElementsByClassName('rect');
+								while(elements.length > 0){
+									elements[0].parentNode.removeChild(elements[0]);
+								}
+								stabiliserManette();
 								//animation();
+								atterrir();
 							}
-							
 						}
-						
 					});
 				});
 				
@@ -751,6 +754,7 @@
 					if(compteur==4){
 						$("#Affichagedistance").html('');
 						stabiliser();
+						atterrir();
 					}
 				}
 
@@ -767,24 +771,39 @@
 					rect.style.top = (img.offsetTop + y) + 'px';
 				};
 				
-			}else{
-				$("#Affichagedistance").html('');
-				var elements = document.getElementsByClassName('rect');
-				while(elements.length > 0){
-					elements[0].parentNode.removeChild(elements[0]);
-				}
+				ArretTimeout=setTimeout(detect, 100);	
 			}
-				setTimeout(detect, 100);	
-			}
+			
 			
 			chargeImages();
 			
-			
 			socket.on('event', function (data) {
 				if(data.name=="decollagefini"){
-					detect();
+					setInterval(function(){
+						var inputElements = document.getElementById('myonoffswitch');
+						if(inputElements.checked){
+							boucle = boucle + 1;
+							if(boucle==1){
+								detect();
+							}
+						}else{
+							if (boucle >= 1){
+								clearTimeout(ArretTimeout);
+								boucle=0;
+								$("#Affichagedistance").html('');
+								var elements = document.getElementsByClassName('rect');
+								while(elements.length > 0){
+									elements[0].parentNode.removeChild(elements[0]);
+								}
+							}
+						}
+					},1000);
 				}
 			});
+			
+			
+			
+			
 				
 			
 			
